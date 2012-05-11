@@ -11,16 +11,16 @@ class Corefw_Master {
 	}
 
 	public function runMaster() {
-		$request = $this->analyze();
-		$this->resources($request);
-		$user = $this->authenticate($request);
+		$this->analyze();
+		$this->resources();
+		$this->authenticate();
 		$this->process();
 		$this->output();
 		$this->hangup();
 	}
 
 	public function analyze() {
-		$request = new StdClass;
+		$request = $this->associate->getMeA('request');
 		while ($svc = $this->associate->whoCanHandle('analyze')) {
 			$svc->analyze($request);
 		}
@@ -30,7 +30,8 @@ class Corefw_Master {
 	/**
 	 * @return a user
 	 */
-	public function resources($request) {
+	public function resources() {
+		$request = $this->associate->getMeA('request');
 	}
 
 	public function authenticate() {
@@ -43,7 +44,7 @@ class Corefw_Master {
 	}
 
 	public function output() {
-		$request = new StdClass;
+		$request = $this->associate->getMeA('request');
 		while ($svc =  $this->associate->whoCanHandle('output')) {
 			$svc->output($request);
 		}
