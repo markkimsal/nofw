@@ -1,0 +1,3 @@
+<?php
+
+associate_iCanHandle('master', 'corefw/master.php');
