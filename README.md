@@ -72,3 +72,7 @@ $user = associate_getMeA('user');
 ```
 
 The same technique can be used for DB handles or wrapper objects.  Experiment loading up 'things' in the 'resources' lifecycle.
+
+I build large sites, this isn't for me
+=====
+Yes, yes, we all build large sites.  But, do you know how your existing framework can handle large modifications to the workflow?  What if you had to add on API functionality, where the requests don't have cookies (and therefore sessions)?  When you're outputting JSON data do you need to load the entire templating library just to turn it off so you can send raw JSON?  What about a public RSS feed that is cached, can you avoid loading user and database libraries at all on those types requests?  Does your framework offer customization at every level?
