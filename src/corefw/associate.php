@@ -16,11 +16,12 @@ class Corefw_Associate {
 	}
 
 	public function whoCanHandle($service) {
+		if (!isset($this->serviceList[$service])) {
+			return FALSE;
+		}
+
 		$filesep = '/';
 		$objList = array();
-		if (!isset($this->serviceList[$service])) {
-			return array();
-		}
 
 		$svc = each($this->serviceList[$service]);
 		//done with service list
@@ -60,33 +61,23 @@ class Corefw_Associate {
 		$this->serviceList[$service] = array($file);
 	}
 
-	public function iAmA($thing, $file, $priority=2) {
-		if ($priority == 1) {
-			if (!is_array($this->thingList[$thing])) {
-				$this->thingList[$thing] = array();
-			}
-			array_unshift($this->thingList[$thing], $file);
-			reset($this->thingList[$thing]);
-		} else {
-			$this->thingList[$thing][] = $file;
-		}
+	public function iAmA($thing, $file) {
+		$this->thingList[$thing] = $file;
 	}
 
+	/**
+	 * Return a defined thing or an empty object (StdClass)
+	 * @return object  defined thing or empty object (StdClass)
+	 */
 	public function getMeA($thing) {
+		if (!isset($this->thingList[$thing])) {
+			$this->thingList[$thing] = 'StdClass';
+			$this->objectCache[$thing] = array(new StdClass);
+		}
 		$filesep = '/';
 		$objList = array();
-		if (!isset($this->thingList[$thing])) {
-			return array();
-		}
+		$file = $this->thingList[$thing];
 
-		$svc = each($this->thingList[$thing]);
-		//done with thing list
-		if ($svc === FALSE) {
-			reset($this->thingList[$thing]);
-			return FALSE;
-		}
-		$file = $svc[1];
-		unset($svc);
 		if (!isset($this->objectCache[$file])) {
 			if(!include_once('local'.$filesep.$file)) {
 				if(!include_once('src'.$filesep.$file))
