@@ -23,6 +23,10 @@ Inside the specified file should be a class named Mytools_Recordexecutiontime an
 
 If, during the process of certain requests, you decide that you want to completely alter the execution path you can *own* part of a lifecycle with associate_iCanOwn( $cycle, $file).  This will erase all previously identified slots for that part of the lifecycle.
 
+sounds dumb
+==========
+Indeed, and perhaps it is dumb.  Maybe you are wondering where all the nifty libraries are that force you to do things a certain way.  Those already exist and are just waiting for you to hook them in!  You can chain in an entire Zend Framework application with one class that wraps up $application->bootstrap()->run().  What's the point of that, you say?  It gives you a starting point to dissect your existing application and inject resource-light responses when needed.
+
 setup
 =====
 Copy etc/bootstrap.php.txt to etc/bootstrap.php
