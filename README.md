@@ -58,3 +58,17 @@ What happens if you put this in the output function of hello world?
 ```php
 	associate_iCanHandle('output', 'mypage/footer.php');
 ```
+
+things
+======
+Sometimes you need to use an object in more than one place (duh).  These are 'things' in nofw.  If you want to have a standard user class, in the etc/bootstrap.php file simple add:
+```php
+associate_IAmA('user', 'myuser/user_model.php');
+```
+
+In other parts of your code, you can retreive this user with:
+```php
+$user = associate_getMeA('user');
+```
+
+The same technique can be used for DB handles or wrapper objects.  Experiment loading up 'things' in the 'resources' lifecycle.
