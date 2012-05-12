@@ -51,7 +51,7 @@ class Nofw_Associate {
 
 	public function iCanHandle($service, $file, $priority=2) {
 		if ($priority == 1) {
-			if (!is_array($this->serviceList[$service])) {
+			if (!isset($this->serviceList[$service])) {
 				$this->serviceList[$service] = array();
 			}
 			array_unshift($this->serviceList[$service], $file);
