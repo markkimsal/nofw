@@ -32,8 +32,8 @@ class Corefw_Associate {
 		$file = $svc[1];
 		unset($svc);
 		if (!isset($this->objectCache[$file])) {
-			if(!include_once('local'.$filesep.$file)) {
-				if(!include_once('src'.$filesep.$file))
+			if(!@include_once('local'.$filesep.$file)) {
+				if(!@include_once('src'.$filesep.$file))
 					return FALSE;
 			}
 			$className = $this->formatClassName($file);
@@ -79,12 +79,13 @@ class Corefw_Associate {
 		$file = $this->thingList[$thing];
 
 		if (!isset($this->objectCache[$file])) {
-			if(!include_once('local'.$filesep.$file)) {
-				if(!include_once('src'.$filesep.$file))
+			if(!@include_once('local'.$filesep.$file)) {
+				if(!@include_once('src'.$filesep.$file))
 					return FALSE;
 			}
 			$className = $this->formatClassName($file);
 			$_x = new $className;
+
 			$this->objectCache[$file] = $_x;
 			$_x = null;
 		}
