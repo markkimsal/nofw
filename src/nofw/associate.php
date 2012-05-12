@@ -4,6 +4,7 @@ class Nofw_Associate {
 
 	public $serviceList = array(); 
 	public $thingList   = array(); 
+	public $varList     = array(); 
 	public $objectCache = array();
 
 	static $assoc = NULL;
@@ -92,6 +93,16 @@ class Nofw_Associate {
 		return $this->objectCache[$file];
 	}
 
+	public function set($key, $val) {
+		$this->varList[$key] = $val;
+	}
+
+	public function get($key, $default=NULL) {
+		if (!isset($this->varList[$key]))
+			return $default;
+
+		return $this->varList[$key];
+	}
 
 	public function formatClassName($filename) {
 		$filesep = '/';
@@ -119,4 +130,14 @@ function associate_iAmA($thing, $file) {
 function associate_getMeA($thing) {
 	$a = Nofw_Associate::getAssociate();
 	return $a->getMeA($thing);
+}
+
+function associate_set($key, $val) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->set($key, $val);
+}
+
+function associate_get($key, $def=NULL) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->get($thing, $def);
 }
