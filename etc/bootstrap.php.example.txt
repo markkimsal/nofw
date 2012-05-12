@@ -1,0 +1,9 @@
+<?php
+
+associate_iCanHandle('master', 'nofw/master.php');
+
+associate_iCanHandle('analyze', 'example_nofw/analyzer.php');
+associate_iCanHandle('output', 'example_nofw/helloworld.php');
+
+associate_iAmA('user', 'example_nofw/user.php');
+associate_iAmA('request', 'example_nofw/request.php');
