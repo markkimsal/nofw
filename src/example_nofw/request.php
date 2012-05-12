@@ -228,4 +228,8 @@ class Example_nofw_Request {
 			}
 		}
 	}
+
+	public function getUser() {
+		return associate_getMeA('user');
+	}
 }
