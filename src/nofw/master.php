@@ -1,13 +1,13 @@
 <?php
 
 
-class Corefw_Master {
+class Nofw_Master {
 
 	public $associate = NULL;
 
 
 	public function __construct() {
-		$this->associate = Corefw_Associate::getAssociate();
+		$this->associate = Nofw_Associate::getAssociate();
 	}
 
 	public function runMaster() {

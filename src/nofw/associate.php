@@ -1,6 +1,6 @@
 <?php
 
-class Corefw_Associate {
+class Nofw_Associate {
 
 	public $serviceList = array(); 
 	public $thingList   = array(); 
@@ -10,7 +10,7 @@ class Corefw_Associate {
 
 	static public function &getAssociate() {
 		if (self::$assoc == NULL) {
-			self::$assoc = new Corefw_Associate();
+			self::$assoc = new Nofw_Associate();
 		}
 		return self::$assoc;
 	}
@@ -107,16 +107,16 @@ class Corefw_Associate {
 }
 
 function associate_iCanHandle($service, $file) {
-	$a = Corefw_Associate::getAssociate();
+	$a = Nofw_Associate::getAssociate();
 	$a->iCanHandle($service, $file);
 }
 
 function associate_iAmA($thing, $file) {
-	$a = Corefw_Associate::getAssociate();
+	$a = Nofw_Associate::getAssociate();
 	$a->iAmA($thing, $file);
 }
 
 function associate_getMeA($thing) {
-	$a = Corefw_Associate::getAssociate();
+	$a = Nofw_Associate::getAssociate();
 	return $a->getMeA($thing);
 }

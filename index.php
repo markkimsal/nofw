@@ -1,6 +1,6 @@
 <?php
 
-include ('src/corefw/associate.php');
+include ('src/nofw/associate.php');
 
 if(!include('etc/bootstrap.php')) {
 	echo "please setup your etc/bootstrap.php file.";
@@ -8,9 +8,9 @@ if(!include('etc/bootstrap.php')) {
 }
 
 
-$assoc = Corefw_Associate::getAssociate();
+$assoc = Nofw_Associate::getAssociate();
 
-include ('src/corefw/master.php');
+include ('src/nofw/master.php');
 while ($svc = $assoc->whoCanHandle('master')) {
 	$svc->runMaster();
 }
