@@ -73,6 +73,42 @@ $user = associate_getMeA('user');
 
 The same technique can be used for DB handles or wrapper objects.  Experiment loading up 'things' in the 'resources' lifecycle.
 
+flags / settings
+======
+Setting and getting global values can be done with the associate_get()/associate_set() functions.  This can be handy when you set database connection information in the bootstrap, then load that information in your database abstraction library.  Other ideas can be copyright inforation, version strings, and template variables.
+
+custom lifecycles
+======
+There's nothing stopping your from creating your own chain of command with the same lifecycles used in the master process running.
+
+```php
+		associate_iCanHandle('Top Menu', 'mytemplate/menu.php');
+		associate_iCanHandle('Bottom Footer', 'mytemplate/menu.php');
+		if (isset($_SESSION['sparkMessages'])) {
+			associate_iCanHandle('Spark Messages', 'mytemplate/sparkmsg.php');
+		}
+
+		//later...
+
+		$associate = Nofw_Associate::getAssociate();
+		$request = $associate->getMeA('request');
+		$output = '';
+		while ($svc =  $associate->whoCanHandle('Top Menu')) {
+			$output .= $svc->template($request, 'Top Menu');
+		}
+		while ($svc =  $associate->whoCanHandle('Spark Messages')) {
+			$output .= $svc->template($request, 'Spark Messages');
+		}
+		while ($svc =  $associate->whoCanHandle('Main Content')) {
+			$output .= $svc->template($request, 'Main Content');
+		}
+		while ($svc =  $associate->whoCanHandle('Bottom Footer')) {
+			$output .= $svc->template($request, 'Bottom Footer');
+		}
+
+		return $output."\n";
+```
+
 I build large sites, this isn't for me
 =====
 Sure, so you should know how important it is to control resources on every page hit.  Do you know how your existing framework can handle large modifications to the workflow?  What if you had to add on API functionality, where the requests don't have cookies (and therefore sessions)?  When you're outputting JSON data do you need to load the entire templating library just to turn it off so you can send raw JSON?  What about a public RSS feed that is cached, can you avoid loading user and database libraries at all on those types of requests?  Does your framework offer customization at every level?
