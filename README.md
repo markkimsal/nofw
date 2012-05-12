@@ -61,7 +61,7 @@ What happens if you put this in the output function of hello world?
 
 things
 ======
-Sometimes you need to use an object in more than one place (duh).  These are 'things' in nofw.  If you want to have a standard user class, in the etc/bootstrap.php file simple add:
+Sometimes you need to use an object in more than one place (duh).  These are 'things' in nofw.  If you want to have a standard user class, in the etc/bootstrap.php file simply add:
 ```php
 associate_IAmA('user', 'myuser/user_model.php');
 ```
