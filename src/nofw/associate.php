@@ -233,5 +233,5 @@ function associate_set($key, $val) {
 
 function associate_get($key, $def=NULL) {
 	$a = Nofw_Associate::getAssociate();
-	return $a->get($thing, $def);
+	return $a->get($key, $def);
 }
