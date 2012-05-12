@@ -32,6 +32,10 @@ class Nofw_Master {
 	 */
 	public function resources() {
 		$request = $this->associate->getMeA('request');
+		while ($svc =  $this->associate->whoCanHandle('resources')) {
+			$svc->resources($request);
+		}
+		return $request;
 	}
 
 	public function authenticate() {
@@ -41,6 +45,12 @@ class Nofw_Master {
 	}
 
 	public function process() {
+		$request = $this->associate->getMeA('request');
+		while ($svc =  $this->associate->whoCanHandle('process')) {
+			$svc->process($request);
+		}
+		return $request;
+
 	}
 
 	public function output() {
