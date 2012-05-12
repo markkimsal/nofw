@@ -73,6 +73,24 @@ $user = associate_getMeA('user');
 
 The same technique can be used for DB handles or wrapper objects.  Experiment loading up 'things' in the 'resources' lifecycle.
 
+You can pass constructor arguments to things as well:
+
+```php
+associate_IAmA('db', 'mylibs/mysql.php');
+$db1 = associate_getMeA('db', 'mysql://root@localhost/mydb');
+$db2 = associate_getMeA('db', 'mysql://root@localhost/otherdb');
+```
+
+You can also request a clone of an object with:
+```php
+associate_IAmA('user', 'myuser/user.php');
+$loggedInUser = associate_getMeA('user');
+$otherUser    = associate_getMeANew('user');
+```
+
+The $otherUser will be a clone (in PHP5) of the same object used for $loggedInUser.  Objects with different constructor arguments are always different, they are cached with the name of the file and an SHA1 sum of the constructor arguments.
+
+
 flags / settings
 ======
 Setting and getting global values can be done with the associate_get()/associate_set() functions.  This can be handy when you set database connection information in the bootstrap, then load that information in your database abstraction library.  Other ideas can be copyright inforation, version strings, and template variables.
