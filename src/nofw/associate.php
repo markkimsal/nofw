@@ -195,9 +195,14 @@ class Nofw_Associate {
 	}
 }
 
-function associate_iCanHandle($service, $file) {
+function associate_iCanHandle($service, $file, $priority=2) {
 	$a = Nofw_Associate::getAssociate();
-	$a->iCanHandle($service, $file);
+	$a->iCanHandle($service, $file, $priority);
+}
+
+function associate_iCanOwn($service, $file) {
+	$a = Nofw_Associate::getAssociate();
+	$a->iCanOwn($service, $file);
 }
 
 function associate_iAmA($thing, $file) {
