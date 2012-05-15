@@ -17,6 +17,13 @@ class Nofw_Associate {
 	}
 
 	public function whoCanHandle($service) {
+		$endService = 'post_'.$service;
+		//maybe we have only a post service (priority = 3)
+		if (!isset($this->serviceList[$service])) {
+			$service = $endService;
+		}
+
+		//maybe we have no services
 		if (!isset($this->serviceList[$service])) {
 			return FALSE;
 		}
@@ -26,10 +33,21 @@ class Nofw_Associate {
 
 		$svc = each($this->serviceList[$service]);
 		//done with service list
-		if ($svc === FALSE) {
+		if ($svc === FALSE && !isset($this->serviceList[$endService])) {
 			reset($this->serviceList[$service]);
 			return FALSE;
 		}
+		//not done with post_service list
+		if ($svc == FALSE) {
+			$svc = each($this->serviceList[$endService]);
+			if ($svc === FALSE) {
+				reset($this->serviceList[$service]);
+				reset($this->serviceList[$endService]);
+				return FALSE;
+			}
+		}
+
+
 		$file = $svc[1];
 		unset($svc);
 		if (!isset($this->objectCache[$file])) {
@@ -52,6 +70,9 @@ class Nofw_Associate {
 	}
 
 	public function iCanHandle($service, $file, $priority=2) {
+		if ($priority == 3) {
+			$service = 'post_'.$service;
+		}
 		if ($priority == 1) {
 			if (!isset($this->serviceList[$service])) {
 				$this->serviceList[$service] = array();
@@ -66,6 +87,10 @@ class Nofw_Associate {
 	public function iCanOwn($service, $file) {
 		//resets automatically
 		$this->serviceList[$service] = array($file);
+		$endService = 'post_'.$service;
+		if (isset($this->serviceList[$endService])) {
+			$this->serviceList[$endService] = array();
+		}
 	}
 
 	public function iAmA($thing, $file) {
