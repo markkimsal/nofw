@@ -1,7 +1,7 @@
 <?php
 
 
-class Example_nofw_Footer {
+class Example_Footer {
 
 	public function output(&$request) {
 //		associate_iCanHandle('output', 'mypage/footer.php');

@@ -1,7 +1,7 @@
 <?php
 
 
-class Example_nofw_Helloworld {
+class Example_Helloworld {
 
 	public function output(&$request) {
 		$user = associate_getMeA('user');

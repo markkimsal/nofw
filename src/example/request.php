@@ -1,6 +1,6 @@
 <?php
 
-class Example_nofw_Request {
+class Example_Request {
 
 	public $vars           = array();
 	public $getvars        = array();

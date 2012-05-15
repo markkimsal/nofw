@@ -1,6 +1,6 @@
 <?php
 
-class Example_nofw_Analyze_sapi_cli {
+class Example_Analyze_sapi_cli {
 
 	public function analyze(&$req) {
 		global $argv;

@@ -1,6 +1,6 @@
 <?php
 
-class Example_nofw_Analyze_sapi_http {
+class Example_Analyze_sapi_http {
 
 	public function analyze(&$request) {
 		$params = $_REQUEST;
