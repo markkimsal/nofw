@@ -1,6 +1,6 @@
 <?php
 
-class Example_nofw_User {
+class Example_User {
 
 	public function sayGoodbye() {
 		return "Goodbye, All!";

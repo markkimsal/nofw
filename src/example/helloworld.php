@@ -9,7 +9,7 @@ class Example_Helloworld {
 			$output = array('msg'=>'Hello, World.', 'output'=>$user->sayGoodbye());
 			echo json_encode($output);
 		} else {
-			associate_iCanHandle('output', 'example_nofw/footer.php');
+			associate_iCanHandle('output', 'example/footer.php');
 			echo "Hello World. <br/>\n";
 			echo $user->sayGoodbye(). "<br/>\n";
 		}
