@@ -3,7 +3,12 @@
 associate_iCanHandle('master', 'nofw/master.php');
 
 associate_iCanHandle('analyze', 'example/analyzer.php');
-associate_iCanHandle('output', 'example/helloworld.php');
+associate_iCanHandle('analyze', 'example/router.php', 3);
+associate_iCanHandle('output',  'example/helloworld.php');
+associate_iCanHandle('output',  'example/footer.php', 3);
+associate_iCanHandle('output',  'example/time.php', 3);
+
+
 
 associate_iAmA('user', 'example/user.php');
 associate_iAmA('request', 'example/request.php');
