@@ -35,10 +35,12 @@ class Nofw_Associate {
 		if (!isset($this->objectCache[$file])) {
 			if(!file_exists('local'.$filesep.$file)) {
 				if(!@include_once('src'.$filesep.$file))
-					return FALSE;
+					//can't find a file, just keep going with recursion
+					return $this->whoCanHandle($service);
 			} else {
 				if(!include_once('local'.$filesep.$file)) {
-					return FALSE;
+					//found the file, but it has an error, keep going with recursion
+					return $this->whoCanHandle($service);
 				}
 			}
 			$className = $this->formatClassName($file);
