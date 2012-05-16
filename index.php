@@ -1,5 +1,6 @@
 <?php
 
+$nofw_start = microtime(true);
 include ('src/nofw/associate.php');
 
 if(!include('etc/bootstrap.php')) {
