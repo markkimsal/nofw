@@ -43,6 +43,10 @@ class Metrofw_Router {
 		if ($args === NULL) {
 			return '';
 		}
+		if (!is_array($args)) {
+			return '';
+		}
+
 		$v = '';
 		foreach ($args as $_k => $_v) {
 			$v .= '/'.urlencode($_k).'='.urlencode($_v);
