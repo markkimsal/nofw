@@ -768,7 +768,7 @@ class Metrodb_Dataitem {
 		$this->_orderBy[] = $col;
 	}
 
-	function initBlank() {
+	public function initBlank() {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$columns = $db->getTableColumns($this->_table);
 		if (!$columns) return;
