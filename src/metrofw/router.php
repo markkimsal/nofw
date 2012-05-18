@@ -32,7 +32,7 @@ class Metrofw_Router {
 		associate_iCanHandle('resources',  $parts[1].'/main.php');
 		associate_iCanHandle('authenticate',  $parts[1].'/main.php');
 		associate_iCanHandle('process',  $parts[1].'/main.php');
-		associate_iCanHandle('output',  $parts[1].'/main.php');
+		associate_iCanHandle('output',  $parts[1].'/main.php', 1);
 	}
 
 	public function unrouteUrl($app) {
