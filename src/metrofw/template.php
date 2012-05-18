@@ -76,9 +76,12 @@ class Metrofw_Template {
 	}
 
 	public function template($request, $section) {
+		if (isset($request->output)) {
+			return $request->output;
+		}
 
 		ob_start();
-		@include($this->baseDir.associate_get('template.main.file', 'main/main.html.php'));
+		@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'));
 		return ob_get_contents() . substr( ob_end_clean(), 0, 0);
 	}
 
