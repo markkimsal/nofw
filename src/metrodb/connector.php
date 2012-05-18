@@ -7,6 +7,7 @@ class Metrodb_Connector {
 
 	public function resources(&$request) {
 		associate_iAmA('dataitem', 'metrodb/dataitem.php');
+		associate_iAmA('datamodel', 'metrodb/datamodel.php');
 	}
 
 	/**
