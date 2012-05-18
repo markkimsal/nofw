@@ -33,11 +33,11 @@ class Metrofw_Template {
 		if (isset($request->sparkMsg) ) {
 			associate_iCanHandle('template.sparkmsg', 'metrofw/sparkmsg.php', 1);
 		}
-
+		associate_iCanHandle('template.toplogin', 'metrofw/toplogin.php');
 		$this->parseTemplate($layout);
 	}
 
-	function parseTemplate($layout = 'index') {
+	public function parseTemplate($layout = 'index') {
 
 		$templateName = associate_get('template_name');
 		//scope
@@ -115,7 +115,6 @@ function sitename() {
 }
 
 /**
- * wrapper for static function
  */
 function m_turl($https=-1) {
 	static $baseUri;
@@ -135,10 +134,11 @@ function m_turl($https=-1) {
 	if ($https === 0) {
 		return 'http://'.$end;
 	} else if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || $https>0) {
-	var_dump($https);return;
+	//var_dump($https);return;
 		return 'https://'.$end;
 	} else {
 		return 'http://'.$end;
 	}
 }
+
 
