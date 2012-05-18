@@ -47,9 +47,14 @@ class Nofw_Associate {
 			}
 		}
 
-
 		$file = $svc[1];
 		unset($svc);
+		//you can tell the associate iCanHandle('service', $object)
+		// as well as passing it a file.
+		if (is_object($file)) {
+			return $file;
+		}
+
 		if (!isset($this->objectCache[$file])) {
 			if(!file_exists('local'.$filesep.$file)) {
 				if(!@include_once('src'.$filesep.$file))
@@ -119,32 +124,9 @@ class Nofw_Associate {
 			$cachekey = $file.':'.sha1(serialize($args));
 		}
 
+		if (!$this->loadAndCache($file, $cachekey, $args))
+			return new StdClass();
 
-		if (!isset($this->objectCache[$cachekey])) {
-
-			if(!file_exists('local'.$filesep.$file)) {
-				if(!@include_once('src'.$filesep.$file))
-					return FALSE;
-			} else {
-				if(!include_once('local'.$filesep.$file)) {
-					return FALSE;
-				}
-			}
-			$className = $this->formatClassName($file);
-			if (is_array($args) && class_exists('ReflectionClass', false)) {
-				$refl = new ReflectionClass($className);
-				try {
-					$_x = $refl->newInstanceArgs($args);
-				} catch (ReflectionException $e) {
-					$_x = $refl->newInstance();
-				}
-			} else {
-				$_x = new $className;
-			}
-
-			$this->objectCache[$cachekey] = $_x;
-			$_x = null;
-		}
 		return $this->objectCache[$cachekey];
 	}
 
@@ -170,32 +152,49 @@ class Nofw_Associate {
 			$cachekey = $file.':'.sha1(serialize($args));
 		}
 
-		if (!isset($this->objectCache[$cachekey])) {
+		if (!$this->loadAndCache($file, $cachekey, $args))
+			return StdClass();
 
-			if(!file_exists('local'.$filesep.$file)) {
-				if(!@include_once('src'.$filesep.$file))
-					return FALSE;
-			} else {
-				if(!include_once('local'.$filesep.$file)) {
-					return FALSE;
-				}
-			}
-			$className = $this->formatClassName($file);
-			if (is_array($args) && class_exists('ReflectionClass', false)) {
-				$refl = new ReflectionClass($className);
-				try {
-					$_x = $refl->newInstanceArgs($args);
-				} catch (ReflectionException $e) {
-					$_x = $refl->newInstance();
-				}
-			} else {
-				$_x = new $className;
-			}
-
-			$this->objectCache[$cachekey] = $_x;
-			$_x = null;
-		}
 		return clone $this->objectCache[$cachekey];
+	}
+
+	/**
+	 * load a file from local/$file or src/$file.
+	 * Save object to $this->objectCache[$cachekey]
+	 *
+	 * @return  Boolean True if file was loaded and saved
+	 */
+	public function loadAndCache($file, $cachekey, $args=NULL) {
+		if (isset($this->objectCache[$cachekey])) {
+			return TRUE;
+		}
+
+		$filesep = '/';
+
+		if(!file_exists('local'.$filesep.$file)) {
+			if(!@include_once('src'.$filesep.$file)) {
+				return FALSE;
+			}
+		} else {
+			if(!include_once('local'.$filesep.$file)) {
+				return FALSE;
+			}
+		}
+		$className = $this->formatClassName($file);
+		if (is_array($args) && class_exists('ReflectionClass', false)) {
+			$refl = new ReflectionClass($className);
+			try {
+				$_x = $refl->newInstanceArgs($args);
+			} catch (ReflectionException $e) {
+				$_x = $refl->newInstance();
+			}
+		} else {
+			$_x = new $className;
+		}
+
+		$this->objectCache[$cachekey] = $_x;
+		$_x = null;
+		return TRUE;
 	}
 
 	public function set($key, $val) {
