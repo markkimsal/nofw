@@ -103,14 +103,32 @@ class Metrofw_Template {
 		}
 	}
 
+	/**
+	 * This is only used for the "template.main" section
+	 */
 	public function template($request, $section) {
-		if (isset($request->output)) {
+		if (!isset($request->output)) {
+			ob_start();
+			@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'));
+			return ob_get_contents() . substr( ob_end_clean(), 0, 0);
+		}
+		//we have some special output,
+		// could be text, could be object
+		if (!is_object($request->output))
 			return $request->output;
+
+		//it's an object
+		if (method_exists( $request->output, 'toHtml' )) {
+			return call_user_func_array(array($request->output, 'toHtml'), array($request));
 		}
 
-		ob_start();
-		@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'));
-		return ob_get_contents() . substr( ob_end_clean(), 0, 0);
+		if (method_exists( $request->output, 'toString' )) {
+			return call_user_func_array(array($request->output, 'toString'), array($request));
+		}
+
+		if (method_exists( $request->output, '__toString' )) {
+			return call_user_func_array(array($request->output, '__toString'), array($request));
+		}
 	}
 
 	/**
