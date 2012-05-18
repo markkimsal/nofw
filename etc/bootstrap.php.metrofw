@@ -1,0 +1,18 @@
+<?php
+
+associate_iCanHandle('master', 'nofw/master.php');
+
+associate_iCanHandle('analyze', 'example/analyzer.php');
+associate_iCanHandle('analyze',  'metrofw/router.php');
+
+associate_iCanHandle('resources', 'metrofw/utils.php');
+associate_iCanHandle('resources', 'metrodb/connector.php');
+
+associate_iCanHandle('output', 'metrofw/template.php');
+
+associate_iAmA('session',  'metrou/sessiondb.php');
+associate_iAmA('user',     'metrou/user.php');
+associate_iAmA('request',  'metrofw/request.php');
+
+associate_set('default.dsn', 'mysql://root:@localhost/metrofw_dev');
+associate_set('env', 'dev');
