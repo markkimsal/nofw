@@ -10,8 +10,34 @@ class Metrofw_Template {
 	public $baseUri       = '';
 
 
+	/**
+	 * This function handles redirects if 
+	 * $request->redir is set
+	 *
+	 * $this function also sets associate flags:
+	 *
+	 * 'template_name' to 'webapp01' if it is not set,
+	 *
+	 * 'template_basedir' to 'local/templates/' if it is not set,
+	 *
+	 * 'template_baseuri' to 'local/templates/' if it is not set,
+	 *
+	 * This function handles template section "template.main"
+	 * if no other handler is installed for that section.
+	 * If there is no $request->output, it includes 
+	 * the associate flag "template.main.file"
+	 * if there is no file, it defaults to 
+	 * templates/$appName/main.html.php 
+	 *
+	 * If $request->output is set, and 
+	 * if it is a string it is returned,
+	 * if it is an object toHtml is called, if available,
+	 * else, toString is called, if available, 
+	 * else, __toString is called, if available.
+	 *  
+	 * The output is returned.
+	 */
 	public function output($request) {
-		$t = associate_get('t');
 
 		if (isset($request->redir)) {
 			associate_iCanOwn('output', 'metrofw/redir.php', 1);
@@ -28,7 +54,10 @@ class Metrofw_Template {
 
 		associate_set('baseuri', $request->baseUri);
 
-		associate_iCanHandle('template.main', 'metrofw/template.php', 1);
+		//Only handle template.main if no one else has it
+		if (!Metrofw_Template::hasHandlers('template.main')) {
+			associate_iCanHandle('template.main', 'metrofw/template.php', 1);
+		}
 
 		if (isset($request->sparkMsg) ) {
 			associate_iCanHandle('template.sparkmsg', 'metrofw/sparkmsg.php', 1);
@@ -41,15 +70,14 @@ class Metrofw_Template {
 
 		$templateName = associate_get('template_name');
 		//scope
-		$t = associate_get('t');
 
 		$req = associate_getMeA('request');
 		$u = associate_getMeA('user');
 
 		if ($req->isAjax) {
 			header('Content-type: application/json');
-			echo json_encode($t);
-//			$this->doEncodeJson($t);
+			echo json_encode($req->output);
+//			$this->doEncodeJson($req->output);
 			return true;
 		}
 
