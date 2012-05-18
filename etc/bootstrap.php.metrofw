@@ -13,6 +13,7 @@ associate_iCanHandle('output', 'metrofw/template.php');
 associate_iAmA('session',  'metrou/sessiondb.php');
 associate_iAmA('user',     'metrou/user.php');
 associate_iAmA('request',  'metrofw/request.php');
+associate_iAmA('router',   'metrofw/router.php');
 
 associate_set('default.dsn', 'mysql://root:@localhost/metrofw_dev');
 associate_set('env', 'dev');
