@@ -21,29 +21,28 @@ class Metrodb_Dataitem {
 	}
 
 
-	var $_table;
-	var $_pkey;
-	var $_relatedMany   = array();
-	var $_relatedSingle = array();
-//	var $_colMap        = array();
-	var $_typeMap       = array();
-	var $_where         = array();		//list of where sub-arrays
-	var $_excludes      = array();		//list of columns not to select
-	var $_cols          = array();		//list of columns for selects
-	var $_nuls          = array();		//list of columns that can hold null
-	var $_bins          = array();		//list of columns that can hold binary 
-	var $_uniqs         = array();		//list of columns that, together, act as a primary key
-	var $_limit         = -1;
-	var $_start         = -1;
-	var $_sort          = array();
-	var $_groupBy       = array();
-	var $_orderBy       = array();
-	var $_filterNames   = TRUE;
-	var $_tblPrefix     = '';
-	var $_isNew         = FALSE;
-	var $_debugSql      = FALSE;
-	var $_rsltByPkey    = TRUE;
-	//	var $_dsnName       = 'default';
+	public $_table;
+	public $_pkey;
+	public $_relatedMany   = array();
+	public $_relatedSingle = array();
+	public $_typeMap       = array();
+	public $_where         = array();		//list of where sub-arrays
+	public $_excludes      = array();		//list of columns not to select
+	public $_cols          = array();		//list of columns for selects
+	public $_nuls          = array();		//list of columns that can hold null
+	public $_bins          = array();		//list of columns that can hold binary 
+	public $_uniqs         = array();		//list of columns that, together, act as a primary key
+	public $_limit         = -1;
+	public $_start         = -1;
+	public $_sort          = array();
+	public $_groupBy       = array();
+	public $_orderBy       = array();
+	public $_filterNames   = TRUE;
+	public $_tblPrefix     = '';
+	public $_isNew         = FALSE;
+	public $_debugSql      = FALSE;
+	public $_rsltByPkey    = FALSE;
+	//	public $_dsnName       = 'default';
 
 
 	/**
@@ -57,7 +56,7 @@ class Metrodb_Dataitem {
 	 * @see load
 	 * @see find
 	 */
-	function __construct($t,$pkey='') {
+	public function __construct($t,$pkey='') {
 		$this->_table = $t;
 		if ($pkey === NULL) {
 			//we don't want 1 auto-increment primary key
@@ -76,7 +75,7 @@ class Metrodb_Dataitem {
 	/**
 	 * Return all the values as an array
 	 */
-	function valuesAsArray() {
+	public function valuesAsArray() {
 		$vars = get_object_vars($this);
 		$keys = array_keys($vars);
 		$values = array();
@@ -102,14 +101,14 @@ class Metrodb_Dataitem {
 	/**
 	 * Set this object's primary key field
 	 */
-	function setPrimaryKey($n) {
+	public function setPrimaryKey($n) {
 		$this->{$this->_pkey} = $n;
 	}
 
 	/**
 	 * Get this object's primary key field
 	 */
-	function getPrimaryKey() {
+	public function getPrimaryKey() {
 		return @$this->{$this->_pkey};
 	}
 
@@ -120,7 +119,7 @@ class Metrodb_Dataitem {
 	 * @param $key string  column name
 	 * @param $val mixed   any value
 	 */
-	function set($key, $value) {
+	public function set($key, $value) {
 		$this->{$key} = $value;
 	}
 
@@ -129,7 +128,7 @@ class Metrodb_Dataitem {
 	 *
 	 * @return mixed  value of data item's property 
 	 */
-	function get($key) {
+	public function get($key) {
 		if(isset($this->{$key})) {
 			return $this->{$key};
 		} else {
@@ -142,7 +141,7 @@ class Metrodb_Dataitem {
 	 *
 	 * @return mixed FALSE on failure, integer primary key on success
 	 */
-	function save() {
+	public function save() {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 
 		if ( $this->_isNew ) {
@@ -207,7 +206,7 @@ class Metrodb_Dataitem {
 	 * @param string $where  Optional: if an array, it is imploded with " and ", 
 	 *   if it is a string, it is added as a condition for the pkey
 	 */
-	function load($where='') {
+	public function load($where='') {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$whereQ = '';
 
@@ -272,7 +271,7 @@ class Metrodb_Dataitem {
 	/**
 	 * Load one record from the DB where the row matches all set values.
 	 */
-	function loadExisting() {
+	public function loadExisting() {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 
 		$vals = $this->valuesAsArray();
@@ -308,7 +307,7 @@ class Metrodb_Dataitem {
 	 * @param string $where  Optional: if an array, it is imploded with " and ", 
 	 *   if it is a string it is treated as the first part of the where clause
 	 */
-	function find($where='') {
+	public function find($where='') {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$whereQ = '';
 		if (is_array($where) ) {
@@ -372,7 +371,7 @@ class Metrodb_Dataitem {
 	 * @return Array  a list of records as an associative array
 	 */
 
-	function findAsArray($where='') {
+	public function findAsArray($where='') {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$whereQ = '';
 		if (is_array($where) ) {
@@ -425,7 +424,7 @@ class Metrodb_Dataitem {
 	}
 
 
-	function delete($where='') {
+	public function delete($where='') {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$whereQ = '';
 		//maybe the where should be an array of IDs,
@@ -446,7 +445,7 @@ class Metrodb_Dataitem {
 		return $db->query( $this->buildDelete($whereQ) );
 	}
 
-	function getUnlimitedCount($where='') {
+	public function getUnlimitedCount($where='') {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$whereQ = '';
 		if (is_array($where) ) {
@@ -480,23 +479,22 @@ class Metrodb_Dataitem {
 	}
 
 
-	function row2Obj($row) {
+	public function row2Obj($row) {
 		foreach ($row as $k=>$v) {
 			if (in_array($k,$this->_excludes)) { continue; }
 			//optionally translate k to k prime
 			$this->{$k} = $v;
-//			$this->_colMap[$k] = $k;
 		}
 		$this->_isNew = false;
 	}
 
 
-	function getTable() {
+	public function getTable() {
 		return $this->_tblPrefix.$this->_table;
 	}
 
 
-	function buildSelect($whereQ='') {
+	public function buildSelect($whereQ='') {
 		if (count($this->_cols) > 0) {
 			$cols = implode(',',$this->_cols);
 		} else {
@@ -505,17 +503,17 @@ class Metrodb_Dataitem {
 		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ." " . $this->buildOrder()." " . $this->buildLimit();
 	}
 
-	function buildCountSelect($whereQ='') {
+	public function buildCountSelect($whereQ='') {
 		$cols = 'count(*) as total_rec';
 		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ;
 	}
 
 
-	function buildDelete($whereQ='') {
+	public function buildDelete($whereQ='') {
 		return "DELETE FROM ".$this->getTable()." ".$this->buildWhere($whereQ). " " . $this->buildLimit();
 	}
 
-	function buildInsert() {
+	public function buildInsert() {
 		$vars = get_object_vars($this);
 		$keys = array_keys($vars);
 		$fields = array();
@@ -552,7 +550,7 @@ class Metrodb_Dataitem {
 	 * If no primary key (_pkey) is set, then the list of unique columns (uniq)
 	 * will be considered unique.
 	 */
-	function buildUpdate() {
+	public function buildUpdate() {
 		$sql = "UPDATE ".$this->getTable()." SET \n";
 		$vars = get_object_vars($this);
 		$keys = array_keys($vars);
@@ -589,7 +587,7 @@ class Metrodb_Dataitem {
 		return $sql;
 	}
 
-	function buildJoin() {
+	public function buildJoin() {
 		$sql = '';
 		foreach ($this->_relatedSingle as $_idx => $rel) {
 			$tbl = $rel['ftable'];
@@ -606,7 +604,7 @@ class Metrodb_Dataitem {
 	/**
 	 * construct a where clause including "WHERE "
 	 */
-	function buildWhere($whereQ='') {
+	public function buildWhere($whereQ='') {
 		foreach ($this->_where as $struct) {
 			$v     = $struct['v'];
 			$s     = $struct['s'];
@@ -638,7 +636,7 @@ class Metrodb_Dataitem {
 	/**
 	 * Convert a where structure into a string, one part at time
 	 */
-	function _whereAtomToString($struct, $atom='') {
+	public function _whereAtomToString($struct, $atom='') {
 		$v     = $struct['v'];
 		$s     = $struct['s'];
 		$k     = $struct['k'];
@@ -658,7 +656,6 @@ class Metrodb_Dataitem {
 		}
 		$atom .= $k .' '. $s. ' ';
 
-		//if (in_array($this->_colMap,$v)) {
 		if (is_string($v) && $v !== 'NULL' && $q) {
 
 			$atom .= '"'.addslashes($v).'" ';
@@ -680,7 +677,7 @@ class Metrodb_Dataitem {
 		return $atom;
 	}
 
-	function buildSort() {
+	public function buildSort() {
 		if (count($this->_sort) < 1 ) {
 			return '';
 		}
@@ -692,7 +689,7 @@ class Metrodb_Dataitem {
 		return 'ORDER BY '.$sortQ;
 	}
 
-	function buildLimit() {
+	public function buildLimit() {
 		/*
 		$sortQ = '';
 		foreach ($this->_sort as $col=>$acdc) {
@@ -707,7 +704,7 @@ class Metrodb_Dataitem {
 		return '';
 	}
 
-	function buildOrder() {
+	public function buildOrder() {
 		if (count($this->_orderBy) > 0) {
 			return " ORDER BY  ".implode(',',$this->_orderBy);
 		}
@@ -715,7 +712,7 @@ class Metrodb_Dataitem {
 	}
 
 
-	function buildGroup() {
+	public function buildGroup() {
 		if (count($this->_groupBy) > 0) {
 			return " GROUP BY  ".implode(',',$this->_groupBy);
 		}
@@ -723,48 +720,48 @@ class Metrodb_Dataitem {
 	}
 
 
-	function andWhere($k,$v,$s='=',$q=TRUE) {
+	public function andWhere($k,$v,$s='=',$q=TRUE) {
 		$this->_where[] = array('k'=>$k,'v'=>$v,'s'=>$s,'andor'=>'and','q'=>$q);
 	}
 
-	function orWhere($k,$v,$s='=',$q=TRUE) {
+	public function orWhere($k,$v,$s='=',$q=TRUE) {
 		$this->_where[] = array('k'=>$k,'v'=>$v,'s'=>$s,'andor'=>'or','q'=>$q);
 	}
 
-	function orWhereSub($k,$v,$s='=',$q=TRUE) {
+	public function orWhereSub($k,$v,$s='=',$q=TRUE) {
 		$where = array_pop($this->_where);
 		$where['subclauses'][] = array('k'=>$k,'v'=>$v,'s'=>$s,'andor'=>'or','q'=>$q);
 		$this->_where[] = $where;
 	}
 
-	function andWhereSub($k,$v,$s='=',$q=TRUE) {
+	public function andWhereSub($k,$v,$s='=',$q=TRUE) {
 		$where = array_pop($this->_where);
 		$where['subclauses'][] = array('k'=>$k,'v'=>$v,'s'=>$s,'andor'=>'and','q'=>$q);
 		$this->_where[] = $where;
 	}
 
-	function resetWhere() {
+	public function resetWhere() {
 		$this->_where = array();
 	}
 
-	function limit($l, $start=0) {
+	public function limit($l, $start=0) {
 		$this->_limit = $l;
 		$this->_start = $start;
 	}
 
-	function sort($col, $acdc='DESC') {
+	public function sort($col, $acdc='DESC') {
 		$this->_sort[$col] = $acdc;
 	}
 
-	function _exclude($col) {
+	public function _exclude($col) {
 		$this->_excludes[] = $col;
 	}
 
-	function groupBy($col) {
+	public function groupBy($col) {
 		$this->_groupBy[] = $col;
 	}
 
-	function orderBy($col) {
+	public function orderBy($col) {
 		$this->_orderBy[] = $col;
 	}
 
@@ -777,19 +774,19 @@ class Metrodb_Dataitem {
 		}
 	}
 
-	function hasMany($table, $alias='') {
+	public function hasMany($table, $alias='') {
 		if ($alias == '') { $alias = 'T'.count($this->_relatedMany);}
 		$this->_relatedMany[] = array('table'=>$table, 'alias'=>$alias);
 	}
 
-	function hasOne($table, $fk = '', $alias='', $lk = '') {
+	public function hasOne($table, $fk = '', $alias='', $lk = '') {
 		if ($alias == '') { $alias = 'T'.count($this->_relatedSingle);}
 		if ($fk == '') { $fk = $table.'_id';}
 		if ($lk == '') { $lk = $this->getTable().'_id'; }
 		$this->_relatedSingle[] = array('fk'=>$fk, 'ftable'=>$table, 'falias'=>$alias, 'lk'=>$lk, 'ltable'=>$this->_table);
 	}
 
-	function __toString() {
+	public function __toString() {
 		$x = "Metrodb_Dataitem [table:".$this->_table."] [id:".sprintf('%d',$this->getPrimaryKey())."] [new:".($this->_isNew?'yes':'no')."]";
 		$x .= "\n<br/>\n";
 		foreach ($this->valuesAsArray() as $k=>$v) {
@@ -802,13 +799,13 @@ class Metrodb_Dataitem {
 	/**
 	 * Used for debugging
 	 */
-	function echoSelect($whereQ='') {
+	public function echoSelect($whereQ='') {
 		echo "<pre>\n";
 		echo $this->buildSelect($whereQ);
 		echo "</pre>\n";
 	}
 
-	function echoDelete($whereQ='') {
+	public function echoDelete($whereQ='') {
 		if (! isset($this->{$this->_pkey}) && $whereQ != '') {
 			$this->{$this->_pkey} = $whereQ;
 		}
@@ -818,13 +815,13 @@ class Metrodb_Dataitem {
 		echo $this->buildDelete($whereQ);
 	}
 
-	function echoInsert($whereQ = '') {
+	public function echoInsert($whereQ = '') {
 		echo "<pre>\n";
 		echo $this->buildInsert($whereQ);
 		echo "</pre>\n";
 	}
 
-	function echoUpdate($whereQ = '') {
+	public function echoUpdate($whereQ = '') {
 		echo "<pre>\n";
 		echo $this->buildUpdate($whereQ);
 		echo "</pre>\n";
