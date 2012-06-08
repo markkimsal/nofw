@@ -11,7 +11,6 @@ if(!include('etc/bootstrap.php')) {
 
 $assoc = Nofw_Associate::getAssociate();
 
-include ('src/nofw/master.php');
 while ($svc = $assoc->whoCanHandle('master')) {
 	$svc->runMaster();
 }
