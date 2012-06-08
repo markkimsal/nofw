@@ -45,6 +45,20 @@ class Metrodb_Datamodel {
 	}
 
 	/**
+	 * For any undefined attribute call get() on $this->dataItem
+	 */
+	public function __get($key) {
+		return $this->dataItem->get($key);
+	}
+
+	/**
+	 * For any undefined attribute call set() on $this->dataItem
+	 */
+	public function __set($key, $val) {
+		return $this->dataItem->get($key, $val);
+	}
+
+	/**
 	 * For any undefined method call that method on $this->dataItem
 	 */
 	public function __call($method, $args) {
