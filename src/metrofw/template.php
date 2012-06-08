@@ -27,7 +27,7 @@ class Metrofw_Template {
 	 * If there is no $request->output, it includes 
 	 * the associate flag "template.main.file"
 	 * if there is no file, it defaults to 
-	 * templates/$appName/main.html.php 
+	 * templates/$appName/template.mainmain.html.php 
 	 *
 	 * If $request->output is set, and 
 	 * if it is a string it is returned,
@@ -38,6 +38,7 @@ class Metrofw_Template {
 	 * The output is returned.
 	 */
 	public function output($request) {
+		$this->statusHeader($request);
 
 		if (isset($request->redir)) {
 			associate_iCanOwn('output', 'metrofw/redir.php', 1);
@@ -85,8 +86,9 @@ class Metrofw_Template {
 		if ($layout == '') {
 			$layout = 'index';
 		}
+
 		//try special style, if not fall back to index
-		if (!include( $this->baseDir. $templateName.'/'.$layout.'.html.php') ) {
+		if (!@include( $this->baseDir. $templateName.'/'.$layout.'.html.php') ) {
 			if(@include($this->baseDir. $templateName.'/index.html.php')) {
 				$templateIncluded = TRUE;
 			}
@@ -97,6 +99,8 @@ class Metrofw_Template {
 		if (!$templateIncluded) {
 			$errors = array();
 			$errors[] = 'Cannot include template.';
+			$req->httpStatus = '501';
+			$this->statusHeader($req);
 			associate_set('output_errors', $errors);
 			associate_iCanHandle('output', 'metrofw/terrors.php');
 			return true;
@@ -109,7 +113,13 @@ class Metrofw_Template {
 	public function template($request, $section) {
 		if (!isset($request->output)) {
 			ob_start();
-			@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'));
+			if (!@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'))) {
+				$errors = array();
+				$errors = associate_get('output_errors', $errors);
+				$errors[] = 'Cannot include template.';
+				associate_set('output_errors', $errors);
+				associate_iCanHandle('template.main', 'metrofw/terrors.php');
+			}
 			return ob_get_contents() . substr( ob_end_clean(), 0, 0);
 		}
 		//we have some special output,
@@ -153,6 +163,24 @@ class Metrofw_Template {
 		return (isset($associate->serviceList[$section]) &&
 			is_array($associate->serviceList[$section]) &&
 			count($associate->serviceList[$section]) > 0);
+	}
+
+	public function statusHeader($req) {
+		switch ($req->httpStatus) {
+			case '200':
+			header('HTTP/1.1 200 OK');
+			break;
+
+			case '404':
+			header('HTTP/1.1 404 File Not Found');
+			break;
+
+			case '500':
+			case '501':
+			header('HTTP/1.1 501 Server Error');
+			break;
+
+		} 
 	}
 }
 

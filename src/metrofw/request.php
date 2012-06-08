@@ -7,6 +7,7 @@ class Metrofw_Request {
 	public $postvars       = array();
 	public $cookies        = array();
 	public $isAdmin        = FALSE;
+	public $rewrite        = TRUE;
 	public $requestedUrl   = '';
 	public $moduleName     = '';
 	public $serviceName    = '';
@@ -15,6 +16,7 @@ class Metrofw_Request {
 	public $sapiType       = '';
 	public $isAjax         = FALSE;
 	public $prodEnv        = 'prod';
+	public $httpStatus     = '200';
 
 
 	/**
