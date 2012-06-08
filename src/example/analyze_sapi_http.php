@@ -34,7 +34,13 @@ class Example_Analyze_sapi_http {
 					}
 				}
 			}
-		}	
+		}
+		if (array_key_exists('REQUEST_URI', $_SERVER) && $_SERVER['REQUEST_URI']!='') { 		
+			if (strpos($_SERVER['REQUEST_URI'], 'index.php') !== FALSE) {
+			$request->rewrite = FALSE;
+			$request->script = 'index.php';
+			}
+		}
 
 		$request->vars = $params;
 		$request->getvars = $get;
@@ -43,12 +49,16 @@ class Example_Analyze_sapi_http {
 		// get the base URI 
 		// store in the template config area for template processing
 
-		$path = explode("/",$_SERVER['SCRIPT_NAME']);
-		array_pop($path);	
-		$path = implode("/",$path);
-		$uri = $_SERVER['HTTP_HOST'].$path.'/';
+		$path   = explode("/",$_SERVER['SCRIPT_NAME']);
+		$script = array_pop($path);	
+		$path   = implode("/",$path);
+		$uri    = $_SERVER['HTTP_HOST'].$path.'/';
 		$request->baseUri = $uri;
-
+		if ($script == 'admin.php') {
+			$request->isAdmin = TRUE;
+			$request->rewrite = FALSE;
+			$request->script  = 'admin.php';
+		}
 
 		/**
 		 * determine if ajax
