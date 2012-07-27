@@ -1,4 +1,5 @@
 <?php
+include_once(dirname(__FILE__).'/session.php');
 
 /**
  * The Simple session object handles "normal" sessions with the $_SESSION 
