@@ -124,6 +124,14 @@ class Metrofw_Request {
 	}
 
 	/**
+	 * This method calls HTMLspecialchars on the result of $this->cleanString();
+	 */
+	public function escapeString($name) {
+		return htmlspecialchars( $this->cleanString($name) );
+	}
+
+
+	/**
 	 * This method cleans a multi-line string from the GET or POST. 
 	 * It does *not* escape data safely for SQL.
 	 * Order of preference is GET then POST
