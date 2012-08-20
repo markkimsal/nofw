@@ -14,8 +14,13 @@ class Example_Analyze_sapi_http {
 			} else {
 				$parts = explode("/",substr($_SERVER['PATH_INFO'],1));
 			}
-			$request->mse =$parts[0];
-			array_shift($parts);
+			//remove index.php or admin.php if they are present
+			if (array_key_exists('SCRIPT_FILENAME', $_SERVER)) {
+				$sfn = explode('/', $_SERVER['SCRIPT_FILENAME']);
+				if ($parts[0] == end($sfn)) {
+					array_shift($parts);
+				}
+			}
 			foreach($parts as $num=>$p) { 
 				//only put url parts in the get and request
 				// if there's no equal sign
