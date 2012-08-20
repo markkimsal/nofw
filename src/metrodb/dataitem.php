@@ -146,7 +146,7 @@ class Metrodb_Dataitem {
 
 		if ( $this->_isNew ) {
 			if ($this->_debugSql) {
-				cgn::debug( $this->buildInsert() );
+				var_dump( $this->buildInsert() );
 			}
 
 			if (!$db->query( $this->buildInsert(), FALSE )) {
@@ -172,7 +172,7 @@ class Metrodb_Dataitem {
 			$this->_isNew = false;
 		} else {
 			if ($this->_debugSql) {
-				cgn::debug( $this->buildUpdate() );
+				var_dump( $this->buildUpdate() );
 			}
 
 			if (!$db->query( $this->buildUpdate(), FALSE )) {
@@ -240,7 +240,7 @@ class Metrodb_Dataitem {
 		}
 
 		if ($this->_debugSql) {
-			cgn::debug( $this->buildSelect($whereQ) );
+			var_dump( $this->buildSelect($whereQ) );
 		}
 		if (!$db->query( $this->buildSelect($whereQ), FALSE )) {
 			$err = $db->errorMessage;
@@ -285,7 +285,7 @@ class Metrodb_Dataitem {
 			}
 		}
 		if ($this->_debugSql) {
-			cgn::debug( $this->buildSelect() );
+			var_dump( $this->buildSelect() );
 		}
 
 		$db->query( $this->buildSelect() );
@@ -320,7 +320,7 @@ class Metrodb_Dataitem {
 			$whereQ = $this->_pkey .' = '.$where;
 		 */
 		if ($this->_debugSql) {
-			cgn::debug( $this->buildSelect($whereQ) );
+			var_dump( $this->buildSelect($whereQ) );
 		}
 
 		if (!$db->query( $this->buildSelect($whereQ), FALSE )) {
@@ -384,7 +384,7 @@ class Metrodb_Dataitem {
 			$whereQ = $this->_pkey .' = '.$where;
 		 */
 		if ($this->_debugSql) {
-			cgn::debug( $this->buildSelect($whereQ) );
+			var_dump( $this->buildSelect($whereQ) );
 		}
 
 		if (!$db->query( $this->buildSelect($whereQ), FALSE )) {
@@ -455,7 +455,7 @@ class Metrodb_Dataitem {
 		}
 
 		if ($this->_debugSql) {
-			cgn::debug( $this->buildCountSelect($whereQ) );
+			var_dump( $this->buildCountSelect($whereQ) );
 		}
 
 		$db->query( $this->buildCountSelect($whereQ) );
@@ -516,14 +516,16 @@ class Metrodb_Dataitem {
 	public function buildInsert() {
 		$vars = get_object_vars($this);
 		$keys = array_keys($vars);
-		$fields = array();
-		$values = array();
+
+		//set 'created_on' and 'edited_on' automatically
+		$fields = array('created_on', 'updated_on');
+		$values = array(time(), time());
 		foreach ($keys as $k) {
 			if (substr($k,0,1) == '_') { continue; }
 			//fix for SQLITE
 			if (isset($this->_pkey) && $k === $this->_pkey && $vars[$k] == NULL ) {continue;}
 			$fields[] = $k;
-			if ( in_array($k,$this->_bins) ) {
+			if ( in_array($k, $this->_bins) ) {
 				//__ FIXME __ do not force mysql in this library.
 				$values[] = "_binary'".mysql_real_escape_string($vars[$k])."'\n";
 			} else if (in_array($k,$this->_nuls) && $vars[$k] == NULL ) {
@@ -865,7 +867,6 @@ class Metrodb_Dataitem {
 		foreach ($sqlDefs as $sql) {
 			$db->query($sql);
 		}
-
 		if ($doUpdate) {
 			return $db->query($this->buildUpdate());
 		}
@@ -925,6 +926,7 @@ class Metrodb_Dataitem {
 
 			}
 		}
+
 		if (! isset($sqlDefs['created_on'])) {
 			$sqlDefs[] = "created_on int unsigned NULL";
 		}

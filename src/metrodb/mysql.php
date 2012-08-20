@@ -12,7 +12,7 @@ class Metrodb_Mysql extends Metrodb_Connector {
 	 * Uses the classes internal host,user,password, and database variables
 	 * @return void
 	 */
-	function connect() {
+	public function connect() {
 		if (! function_exists('mysql_connect')) {
 			return false;
 		}
@@ -23,6 +23,7 @@ class Metrodb_Mysql extends Metrodb_Connector {
 				$this->driverId = @mysql_connect($this->host, $this->user, $this->password, TRUE);
 			}
 			if (!$this->driverId) {
+				throw new Exception("Unable to connect to database");
 				//Cgn_ErrorStack::throwError ("Unable to connect to database", 501,'error');
 			}
 		}
