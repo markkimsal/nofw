@@ -112,8 +112,26 @@ class Metrofw_Template {
 	 */
 	public function template($request, $section) {
 		if (!isset($request->output)) {
+			$filesep = '/';
+			$subsection = substr($section, strpos($section, '.')+1);
+			$fileChoices = array();
+			$fileChoices[] = $this->baseDir.
+					associate_get('template.main.file', $request->appName.$filesep.$subsection.'.html.php');
+			$fileChoices[] = 'local'.
+					$filesep.$request->appName. $filesep . 'templates'. $filesep . $subsection.'.html.php';
+			$fileChoices[] = 'src'  .
+					$filesep.$request->appName. $filesep . 'templates'. $filesep . $subsection.'.html.php';
+
 			ob_start();
-			if (!@include($this->baseDir.associate_get('template.main.file', $request->appName.'/main.html.php'))) {
+			$success = FALSE;
+			foreach ($fileChoices as $_f) {
+				var_dump($_f);
+				if (include($_f)) {
+					$success = TRUE;
+				}
+			}
+
+			if (!$success) {
 				$errors = array();
 				$errors = associate_get('output_errors', $errors);
 				$errors[] = 'Cannot include template.';
