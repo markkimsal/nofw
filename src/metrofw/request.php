@@ -12,7 +12,6 @@ class Metrofw_Request {
 	public $moduleName     = '';
 	public $serviceName    = '';
 	public $eventName      = '';
-	public $urlName        = '';
 	public $sapiType       = '';
 	public $isAjax         = FALSE;
 	public $prodEnv        = 'prod';
