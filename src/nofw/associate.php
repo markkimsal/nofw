@@ -106,7 +106,7 @@ class Nofw_Associate {
 	 * Return a defined thing or an empty object (StdClass)
 	 * @return object  defined thing or empty object (StdClass)
 	 */
-	public function getMeA($thing) {
+	public function & getMeA($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
 			$this->objectCache[$thing] = array(new StdClass);
@@ -119,13 +119,13 @@ class Nofw_Associate {
 		array_shift($args);
 		if (!count($args)) {
 			$args = NULL;
-			$cachekey = $file;
+			$cachekey = $file.':'.$thing;
 		} else {
-			$cachekey = $file.':'.sha1(serialize($args));
+			$cachekey = $file.':'.$thing.':'.sha1(serialize($args));
 		}
 
 		if (!$this->loadAndCache($file, $cachekey, $args))
-			return new StdClass();
+			$this->objectCache[$cachekey] = new StdClass();
 
 		return $this->objectCache[$cachekey];
 	}
