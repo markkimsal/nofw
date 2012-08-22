@@ -125,9 +125,9 @@ class Metrofw_Template {
 			ob_start();
 			$success = FALSE;
 			foreach ($fileChoices as $_f) {
-				var_dump($_f);
 				if (include($_f)) {
 					$success = TRUE;
+					break;
 				}
 			}
 
