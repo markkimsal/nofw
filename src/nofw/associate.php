@@ -168,6 +168,8 @@ class Nofw_Associate {
 		if (isset($this->objectCache[$cachekey])) {
 			return TRUE;
 		}
+		//if something is undefined, its 'file' in the thingList is set to StdClass
+		if ($file === 'StdClass') return FALSE;
 
 		$filesep = '/';
 
@@ -176,7 +178,7 @@ class Nofw_Associate {
 				return FALSE;
 			}
 		} else {
-			if(!include_once('local'.$filesep.$file)) {
+			if(!@include_once('local'.$filesep.$file)) {
 				return FALSE;
 			}
 		}
