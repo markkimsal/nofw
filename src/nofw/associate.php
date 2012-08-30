@@ -27,11 +27,11 @@ class Nofw_Associate {
 		if (!isset($this->serviceList[$service])) {
 			return FALSE;
 		}
-
 		$filesep = '/';
 		$objList = array();
 
 		$svc = each($this->serviceList[$service]);
+
 		//done with service list
 		if ($svc === FALSE && !isset($this->serviceList[$endService])) {
 			reset($this->serviceList[$service]);
@@ -109,7 +109,7 @@ class Nofw_Associate {
 	public function & getMeA($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
-			$this->objectCache[$thing] = array(new StdClass);
+//			$this->objectCache[$thing] = array(new StdClass);
 		}
 		$filesep = '/';
 		$objList = array();
@@ -137,7 +137,7 @@ class Nofw_Associate {
 	public function getMeANew($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
-			$this->objectCache[$thing] = array(new StdClass);
+//			$this->objectCache[$thing] = array(new StdClass);
 		}
 		$filesep = '/';
 		$objList = array();
@@ -153,7 +153,7 @@ class Nofw_Associate {
 		}
 
 		if (!$this->loadAndCache($file, $cachekey, $args))
-			return StdClass();
+			return new StdClass();
 
 		return clone $this->objectCache[$cachekey];
 	}
