@@ -14,13 +14,22 @@
 		min-height: 100%;
 		height: auto !important;
 		height: 100%;
-		margin: 0 auto -1.0em;
+		margin: 0 auto -1.4em;
 		}
 		.footer, .push {
-		height: 1.0em;
+		height: 1.4em;
 		clear:both;
 		position: relative;
 		}
+html, body {
+height: 100.0%;
+font-size:11pt;
+}
+body {
+line-height:1.8em;
+padding-top:58px;
+}
+
     </style>
     <link href="<?php echo m_turl();?>css/bootstrap-responsive.css" rel="stylesheet">
     <link href="<?php echo m_turl();?>css/admin02-screen.css" rel="stylesheet">
@@ -40,14 +49,14 @@
 
   <body>
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
+	<div class="navbar navbar-fixed-top">
+	  <div class="navbar-inner">
+		<div class="container-fluid">
+		  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </a>
           <a class="brand" href="#"><?php echo associate_get('sitename', 'Control Panel');?></a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
@@ -60,28 +69,17 @@
               <li><a href="#">Sign Out</a></li>
             </ul>
           </div>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
     <div class="wrapper">
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
+    <div class="container">
+      <div class="row">
+        <div class="span3 nav-collapse">
           <div class="sidebar">
-<?php foreach (associate_getMeA('admin_menu') as $_title => $_link): ?>
-            <ul class="sidebar-nav">
-			<li class="light red_grad"><a href="<?php echo $_link;?>">
-				<div class="icon">
-				<i class="icon-home icon-white"></i></div><?php echo $_title;?></a></li>
-			</ul>
-<?php endforeach; ?>
+			<?php echo Metrofw_Template::parseSection('template.adminmenu');?>
+<!--
             <ul class="sidebar-nav">
 			  <li class="closed light red_grad">
 				<a href="<?php echo m_appurl('blog');?>">
@@ -92,6 +90,7 @@
             	</ul>
 			</li>
             </ul>
+-->
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
@@ -103,28 +102,28 @@
 				</div>
 			<?php endif;?>
 
-			<div class="row-fluid">
 
-			<?php if (Metrofw_Template::hasHandlers('template.main')):?>
-					<?php echo Metrofw_Template::parseSection('template.main');?>
+			<?php if (Metrofw_Template::hasHandlers('template.admin')):?>
+					<?php echo Metrofw_Template::parseSection('template.admin');?>
 			<?php endif;?>
 
-	      	</div><!--/row-->
       	</div><!--/.span9-->
 
      </div><!--/row-->
-    </div><!--/.fluid-container-->
+    </div><!--/.container-->
 <div class="push"></div>
      </div><!--/wrapper-->
 
     <div class="footer">
-    <div class="container-fluid">
-      <div class="row-fluid">
-      <div class="span3">
+    <div class="container">
+      <div class="row">
+      <div class="span1">
         <p>&copy; 2012</p>
 	  </div>
       <div class="span9">
-        <p>uses Twitter Bootstrap</p>
+        <p>uses Twitter Bootstrap | 
+		<?php echo Metrofw_Template::parseSection('template.timer');?>
+		</p>
 	  </div>
     </div>
     </div>
@@ -133,5 +132,6 @@
     ================================================== -->
     <script src="<?php echo m_turl();?>js/jquery.min.js"></script>
     <script src="<?php echo m_turl();?>js/bootstrap.js"></script>
+	<?php echo Metrofw_Template::parseSection('template.extrajs');?>
   </body>
 </html>

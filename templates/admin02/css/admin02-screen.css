@@ -58,6 +58,7 @@ cursor: move;
 .tbox_container {
 padding-left: 10px;
 padding-right: 10px;
+padding-top: 10px;
 }
 
 
@@ -81,25 +82,30 @@ form table {
 	margin-top:1em;
 }
 
+/*
 html, body {
-height: 91%;
+height: 91.0%;
 font-size:11pt;
 line-height:2em;
 }
+*/
 body {
 background: url(../img/camo_cloth_grey.png) center top repeat;
 color:#DDD;
-padding-top: 60px;
-padding-bottom: 40px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: -10px;
+  }
 }
 
 
 
 #site-wrap {
-min-height:96%;
+min-height:98%;
 height: auto !important;
-/* height: 100%; */
-margin: 0 auto -60px;
+ height: 100%; 
+margin: 0 auto -40px;
 }
 
 
