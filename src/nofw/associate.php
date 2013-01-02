@@ -27,11 +27,11 @@ class Nofw_Associate {
 		if (!isset($this->serviceList[$service])) {
 			return FALSE;
 		}
-
 		$filesep = '/';
 		$objList = array();
 
 		$svc = each($this->serviceList[$service]);
+
 		//done with service list
 		if ($svc === FALSE && !isset($this->serviceList[$endService])) {
 			reset($this->serviceList[$service]);
@@ -106,10 +106,38 @@ class Nofw_Associate {
 	 * Return a defined thing or an empty object (StdClass)
 	 * @return object  defined thing or empty object (StdClass)
 	 */
-	public function getMeA($thing) {
+	public function & getMeA($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
-			$this->objectCache[$thing] = array(new StdClass);
+//			$this->objectCache[$thing] = array(new StdClass);
+		}
+		$filesep = '/';
+		$objList = array();
+		$file = $this->thingList[$thing];
+
+		$args = func_get_args();
+		array_shift($args);
+		if (!count($args)) {
+			$args = NULL;
+			$cachekey = $file.':'.$thing;
+		} else {
+			$cachekey = $file.':'.$thing.':'.sha1(serialize($args));
+		}
+
+		if (!$this->loadAndCache($file, $cachekey, $args))
+			$this->objectCache[$cachekey] = new StdClass();
+
+		return $this->objectCache[$cachekey];
+	}
+
+	/**
+	 * Return a clone (deep or shallow copy) of a defined thing or an empty object (StdClass)
+	 * @return object  clone of a defined thing or empty object (StdClass)
+	 */
+	public function getMeANew($thing) {
+		if (!isset($this->thingList[$thing])) {
+			$this->thingList[$thing] = 'StdClass';
+//			$this->objectCache[$thing] = array(new StdClass);
 		}
 		$filesep = '/';
 		$objList = array();
@@ -127,34 +155,6 @@ class Nofw_Associate {
 		if (!$this->loadAndCache($file, $cachekey, $args))
 			return new StdClass();
 
-		return $this->objectCache[$cachekey];
-	}
-
-	/**
-	 * Return a clone (deep or shallow copy) of a defined thing or an empty object (StdClass)
-	 * @return object  clone of a defined thing or empty object (StdClass)
-	 */
-	public function getMeANew($thing) {
-		if (!isset($this->thingList[$thing])) {
-			$this->thingList[$thing] = 'StdClass';
-			$this->objectCache[$thing] = array(new StdClass);
-		}
-		$filesep = '/';
-		$objList = array();
-		$file = $this->thingList[$thing];
-
-		$args = func_get_args();
-		array_shift($args);
-		if (!count($args)) {
-			$args = NULL;
-			$cachekey = $file;
-		} else {
-			$cachekey = $file.':'.sha1(serialize($args));
-		}
-
-		if (!$this->loadAndCache($file, $cachekey, $args))
-			return StdClass();
-
 		return clone $this->objectCache[$cachekey];
 	}
 
@@ -168,6 +168,8 @@ class Nofw_Associate {
 		if (isset($this->objectCache[$cachekey])) {
 			return TRUE;
 		}
+		//if something is undefined, its 'file' in the thingList is set to StdClass
+		if ($file === 'StdClass') return FALSE;
 
 		$filesep = '/';
 
@@ -176,7 +178,7 @@ class Nofw_Associate {
 				return FALSE;
 			}
 		} else {
-			if(!include_once('local'.$filesep.$file)) {
+			if(!@include_once('local'.$filesep.$file)) {
 				return FALSE;
 			}
 		}

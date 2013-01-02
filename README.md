@@ -90,6 +90,21 @@ $otherUser    = associate_getMeANew('user');
 
 The $otherUser will be a clone (in PHP5) of the same object used for $loggedInUser.  Objects with different constructor arguments are always different, they are cached with the name of the file and an SHA1 sum of the constructor arguments.
 
+undefined things
+======
+You can request a thing that has not been defined.  If you do this you will receive a new StdClass object reference.  This can be usefull for rapidly prototyping interconnections between libraries.  Starting with a bare object, you can inject a real class definition *later*.
+
+```php
+$menu = associate_getMeA('menu_structure');
+foreach ($menu as $_m) {
+// ... do something
+}
+```
+
+Then, after a few iterations of development or complete launches, you can add a full class definition if you need to expand the capabilities of the thing.
+```php
+associate_IamA('menu_structure', 'mywidgets/menu.php');
+```
 
 flags / settings
 ======
