@@ -105,7 +105,7 @@ function m_url($https=0) {
 
 /**
  */
-function m_appurl($url, $args=null, $https=-1) {
+function m_appurl($url='', $args=null, $https=-1) {
 	static $baseUri;
 	static $templateName;
 	static $templatePath;
@@ -114,11 +114,12 @@ function m_appurl($url, $args=null, $https=-1) {
 	}
 
 	$router = associate_getMeA('router');
-	// *
 	$url  = $router->unrouteUrl($url);
 	$url .= $router->formatArgs($args);
-	$end  = $baseUri.$url.'/';
-	// * /
+	$end  = $baseUri.$url;
+	if (substr($end, -1) !== '/') {
+		$end .= '/';
+	}
 
 	if ($https === 0) {
 		return 'http://'.$end;

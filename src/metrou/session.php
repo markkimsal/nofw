@@ -11,13 +11,19 @@ class Metrou_Session {
 	public $touchTime = -1;
 	public $lastTouchTime = -1;
 
+	public function __construct($autostart=true) {
+		$this->start();
+	}
+
 	/**
 	 * Start a session and save and HTTP Referer
 	 */
 	public function start() {
 		session_name($this->sessionName);
-		if ($this->started) trigger_error('double session');
-			$this->started = TRUE;
+		if ($this->started) {
+			return;
+		}
+		$this->started = TRUE;
 		ini_set('session.gc_maxlifetime', $this->timeout);
 		@session_start();
 		$this->sessionId = session_id();
