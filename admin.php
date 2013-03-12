@@ -2,6 +2,7 @@
 
 $nofw_start = microtime(true);
 include ('src/nofw/associate.php');
+include ('src/nofw/proto.php');
 
 if(!include('etc/bootstrap.admin.php')) {
 	echo "please setup your etc/bootstrap.admin.php file.";
