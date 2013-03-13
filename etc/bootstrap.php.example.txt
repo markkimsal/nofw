@@ -11,4 +11,5 @@ associate_iCanHandle('output',  'example/time.php', 3);
 
 
 associate_iAmA('user', 'example/user.php');
-associate_iAmA('request', 'example/request.php');
+associate_iAmA('request',  'example/request.php');
+associate_iAmA('response', 'example/response.php');

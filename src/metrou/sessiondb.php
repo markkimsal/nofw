@@ -31,15 +31,13 @@ class Metrou_Sessiondb extends Metrou_Session {
 	public function destroy($id) {
 		if (strlen($id) < 1) { return true; }
 		//return false;
-		include_once(CGN_LIB_PATH.'/lib_cgn_data_item.php');
-		$sess = new Cgn_DataItem('cgn_sess', 'cgn_sess_key');
-//		$sess->andWhere('cgn_sess_key',$id);
+		$sess = associate_getMeA('dataitem', 'cgn_sess', 'cgn_sess_key');
 		$sess->delete($id);
 		return true;
 	}
 
 	public function gc($maxlifetime=0) {
-		$sess = new Cgn_DataItem('cgn_sess');
+		$sess = associate_getMeA('dataitem', 'cgn_sess');
 		$sess->andWhere('saved_on', (time()- $this->timeout), '<');
 		$sess->delete();
 		return true;
@@ -47,8 +45,7 @@ class Metrou_Sessiondb extends Metrou_Session {
 
 
 	public function read($id) {
-		@include_once(CGN_LIB_PATH.'/lib_cgn_data_item.php');
-		$sess = new Cgn_DataItem('cgn_sess');
+		$sess = associate_getMeA('dataitem', 'cgn_sess');
 		$sess->andWhere('cgn_sess_key',$id);
 		$sess->_rsltByPkey = false;
 		$sessions = $sess->find();
@@ -73,7 +70,7 @@ class Metrou_Sessiondb extends Metrou_Session {
 	}
 
 	public function write ($id, $sess_data) {
-		$sess = new Cgn_DataItem('cgn_sess');
+		$sess = associate_getMeA('dataitem', 'cgn_sess');
 		$sess->andWhere('cgn_sess_key', $id);
 		$sess->_rsltByPkey = false;
 		$sessions = $sess->find();
@@ -81,7 +78,7 @@ class Metrou_Sessiondb extends Metrou_Session {
 		if (count($sessions)) {
 			$sess = $sessions[0];
 		} else {
-			$sess = new Cgn_DataItem('cgn_sess');
+			$sess = associate_getMeA('dataitem', 'cgn_sess');
 			$sess->cgn_sess_key = $id;
 		}
 		$sess->set('data', $sess_data);

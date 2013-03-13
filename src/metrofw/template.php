@@ -96,24 +96,17 @@ class Metrofw_Template {
 	public function template($request, $section) {
 		$response = associate_getMeA('response');
 		$sect = str_replace('template.', '', $section);
+
 		if ($response->has($sect)) {
 			$content = $response->get($sect);
-			//we have some special output,
-			// could be text, could be object
-			if (!is_object($content))
-				return $content;
-
-			//it's an object
-			if (method_exists( $content, 'toHtml' )) {
-				return call_user_func_array(array($content, 'toHtml'), array($request));
-			}
-
-			if (method_exists( $content, 'toString' )) {
-				return call_user_func_array(array($content, 'toString'), array($request));
-			}
-
-			if (method_exists( $content, '__toString' )) {
-				return call_user_func_array(array($content, '__toString'), array($request));
+			if (is_array($content)) {
+				$html = '';
+				foreach ($content as $c) {
+					$html .= $this->transformContent($c);
+				}
+				return $html;
+			} else {
+				return $this->transformContent($c);
 			}
 		}
 		//we don't have a section in the response
@@ -166,6 +159,26 @@ class Metrofw_Template {
 			return call_user_func_array(array($request->output, '__toString'), array($request));
 		}
 		 */
+	}
+
+	public function transformContent($content) {
+		//we have some special output,
+		// could be text, could be object
+		if (!is_object($content))
+			return $content;
+
+		//it's an object
+		if (method_exists( $content, 'toHtml' )) {
+			return call_user_func_array(array($content, 'toHtml'), array($request));
+		}
+
+		if (method_exists( $content, 'toString' )) {
+			return call_user_func_array(array($content, 'toString'), array($request));
+		}
+
+		if (method_exists( $content, '__toString' )) {
+			return call_user_func_array(array($content, '__toString'), array($request));
+		}
 	}
 
 	/**
@@ -223,7 +236,6 @@ function m_turl($https=-1) {
 	if ($https === 0) {
 		return 'http://'.$end;
 	} else if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || $https>0) {
-	//var_dump($https);return;
 		return 'https://'.$end;
 	} else {
 		return 'http://'.$end;

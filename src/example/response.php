@@ -1,6 +1,6 @@
 <?php
 
-class Metrofw_Response {
+class Example_Response {
 
 	public $sectionList = array();
 	public $headerList  = array();

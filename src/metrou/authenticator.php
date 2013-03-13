@@ -15,10 +15,10 @@ class Metrou_Authenticator {
 	 * If no context is supplied, a default handler will be created.
 	 * The default handler is based on the local mysql installation.
 	 */
-	public function authenticate(&$request) {
+	public function authenticate(&$request, $response) {
 		$configs       = associate_get('auth_configs', array());
 		$this->handler = associate_getMeA('auth_handler');
-		if ($this->handler == NULL) {
+		if ($this->handler == NULL || $this->handler instanceof Nofw_Proto) {
 			$this->handler = new Metrou_Authdefault();
 		}
 		$this->handler->initContext($configs);
@@ -30,15 +30,16 @@ class Metrou_Authenticator {
 		$this->subject = Metrou_Subject::createFromUsername($uname, $pass);
 		$err = $this->handler->authenticate($this->subject);
 
-		$request->redir = m_url();
 		if ($err) {
 			$request->sparkMsg[] = 'failed login';
 			return FALSE;
 		}
 		$request->sparkMsg[] = 'login succeeded';
-		$request->redir = m_url();
+		if ($request->appUrl == 'login') {
+			$response->redir = m_appurl();
+		}
 
-		$this->handler->applyAttributes($this->subject, $user);
+		@$this->handler->applyAttributes($this->subject, $user);
 
 		$user->username = $uname;
 		$user->password = $this->handler->hashPassword($pass);
@@ -93,8 +94,7 @@ class Metrou_Authdefault implements Metrou_Authiface {
 			$subject->credentials['passwordhash'] = $this->hashPassword($subject->credentials['password']);
 		}
 
-		$finder = associate_getMeANew('dataitem', 'cgn_user');
-//		$finder = new Cgn_DataItem('cgn_user');
+		$finder = associate_getMeANew('dataitem', 'user_login');
 		$finder->andWhere('username', $subject->credentials['username']);
 		$finder->andWhere('password', $subject->credentials['passwordhash']);
 		$finder->_rsltByPkey = FALSE;
@@ -127,7 +127,7 @@ class Metrou_Authdefault implements Metrou_Authiface {
 		$user->email    = $attribs['email'];
 		$user->locale   = $attribs['locale'];
 		$user->tzone    = $attribs['tzone'];
-		$user->userId   = $attribs['cgn_user_id'];
+		$user->userId   = $attribs['user_login_id'];
 
 		$user->enableAgent = $attribs['enable_agent'] == '1'? TRUE : FALSE;
 		if ($user->enableAgent) {
@@ -156,7 +156,7 @@ class Metrou_Authldap implements Metrou_Authiface {
 
 	public function getLdapConn() {
 		if ($this->ldap === NULL) {
-			$this->ldap = new Cgn_Ldap($this->dsn);
+			$this->ldap = _getMeA('ldapconn', $this->dsn);
 		}
 		return $this->ldap;
 	}
@@ -167,7 +167,6 @@ class Metrou_Authldap implements Metrou_Authiface {
 	 * @return int  number greater than 0 is an error code, 0 is success
 	 */
 	public function authenticate($subject) {
-		Cgn::loadLibrary('lib_cgn_ldap');
 
 		if (!isset($subject->credentials['passwordhash'])) {
 			$subject->credentials['passwordhash'] = $this->hashPassword($subject->credentials['password']);
@@ -220,7 +219,7 @@ class Metrou_Authldap implements Metrou_Authiface {
 		$existingUser->idProviderToken = $subject->attributes['dn'];
 		Cgn_User::registerUser($existingUser, 'ldap');
 		//tell the subject that what its new ID is
-		$subject->attributes['cgn_user_id'] = $existingUser->userId;
+		$subject->attributes['user_login_id'] = $existingUser->userId;
 		return 0;
 	}
 }
