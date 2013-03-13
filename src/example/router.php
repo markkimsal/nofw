@@ -5,15 +5,13 @@ class Example_Router {
 
 		$url = $request->requestedUrl;
 
+		$request->urlParts = $parts = explode('/', $url);
 		if (strpos($url, '/dologin') === 0) {
-			$request->appUrl  = 'login';
 			$request->appName = 'login';
 //			associate_iCanHandle('authenticate', 'example/authenticator.php');
 		} else {
-			$parts = explode('/', $url);
 			if (isset($parts[1])) {
 				$request->appName = $parts[1];
-				$request->appUrl  = $parts[1];
 				associate_iCanHandle('analyze',       $parts[1].'/main.php');
 				associate_iCanHandle('resources',     $parts[1].'/main.php');
 				associate_iCanHandle('authenticate',  $parts[1].'/main.php');

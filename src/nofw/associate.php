@@ -103,13 +103,12 @@ class Nofw_Associate {
 	}
 
 	/**
-	 * Return a defined thing or an empty object (StdClass)
-	 * @return object  defined thing or empty object (StdClass)
+	 * Return a defined thing or an empty object (Nofw_Proto)
+	 * @return object  defined thing or empty object (Nofw_Proto)
 	 */
 	public function & getMeA($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
-//			$this->objectCache[$thing] = array(new StdClass);
 		}
 		$filesep = '/';
 		$objList = array();
@@ -125,19 +124,18 @@ class Nofw_Associate {
 		}
 
 		if (!$this->loadAndCache($file, $cachekey, $args))
-			$this->objectCache[$cachekey] = new StdClass();
+			$this->objectCache[$cachekey] = new Nofw_Proto($thing);
 
 		return $this->objectCache[$cachekey];
 	}
 
 	/**
-	 * Return a clone (deep or shallow copy) of a defined thing or an empty object (StdClass)
-	 * @return object  clone of a defined thing or empty object (StdClass)
+	 * Return a clone (deep or shallow copy) of a defined thing or an empty object (Nofw_Proto)
+	 * @return object  clone of a defined thing or empty object (Nofw_Proto)
 	 */
 	public function getMeANew($thing) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
-//			$this->objectCache[$thing] = array(new StdClass);
 		}
 		$filesep = '/';
 		$objList = array();
@@ -153,7 +151,7 @@ class Nofw_Associate {
 		}
 
 		if (!$this->loadAndCache($file, $cachekey, $args))
-			return new StdClass();
+			return new Nofw_Proto($thing);
 
 		return clone $this->objectCache[$cachekey];
 	}
@@ -265,6 +263,53 @@ function associate_set($key, $val) {
 }
 
 function associate_get($key, $def=NULL) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->get($key, $def);
+}
+
+
+function _iCanHandle($service, $file, $priority=2) {
+	$a = Nofw_Associate::getAssociate();
+	$a->iCanHandle($service, $file, $priority);
+}
+
+function _iCanOwn($service, $file) {
+	$a = Nofw_Associate::getAssociate();
+	$a->iCanOwn($service, $file);
+}
+
+function _iAmA($thing, $file) {
+	$a = Nofw_Associate::getAssociate();
+	$a->iAmA($thing, $file);
+}
+
+function _getMeA($thing) {
+	$a = Nofw_Associate::getAssociate();
+	$args = func_get_args();
+	if (count($args) <= 1) {
+		return $a->getMeA($thing);
+	} else {
+		return call_user_func_array(array($a, 'getMeA'), $args);
+	}
+	return $a->getMeA($thing);
+}
+
+function _getMeANew($thing) {
+	$a = Nofw_Associate::getAssociate();
+	$args = func_get_args();
+	if (count($args) <= 1) {
+		return $a->getMeANew($thing);
+	} else {
+		return call_user_func_array(array($a, 'getMeANew'), $args);
+	}
+}
+
+function _set($key, $val) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->set($key, $val);
+}
+
+function _get($key, $def=NULL) {
 	$a = Nofw_Associate::getAssociate();
 	return $a->get($key, $def);
 }

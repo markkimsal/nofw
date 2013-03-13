@@ -92,18 +92,19 @@ The $otherUser will be a clone (in PHP5) of the same object used for $loggedInUs
 
 undefined things
 ======
-You can request a thing that has not been defined.  If you do this you will receive a new StdClass object reference.  This can be usefull for rapidly prototyping interconnections between libraries.  Starting with a bare object, you can inject a real class definition *later*.
+You can request a thing that has not been defined.  If you do this you will receive a new Nofw_Proto object reference.  This can be usefull for rapidly prototyping interconnections between libraries.  Starting with a bare object, you can inject a real class definition *later*.  Any function call against a Nofw_Proto will return itself and log the call against an undefined thing with any "logger" that you define.
 
 ```php
-$menu = associate_getMeA('menu_structure');
-foreach ($menu as $_m) {
-// ... do something
-}
+$cart = _getMeA("shopping_cart");
+$cart->addItem("abc", 123)->
+       retotal()->
+       updateInventory()->
+       save();
 ```
 
 Then, after a few iterations of development or complete launches, you can add a full class definition if you need to expand the capabilities of the thing.
 ```php
-associate_IamA('menu_structure', 'mywidgets/menu.php');
+associate_IamA('shopping_cart', 'myecommerce/cart.php');
 ```
 
 flags / settings
