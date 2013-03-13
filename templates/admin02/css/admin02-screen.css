@@ -3,6 +3,7 @@
 
 .tbox {
 margin-top: 0px;
+margin-bottom: 1.2em;
 position: relative;
 background: none;
 background-color: white;
@@ -92,6 +93,7 @@ line-height:2em;
 body {
 background: url(../img/camo_cloth_grey.png) center top repeat;
 color:#DDD;
+background-color:#555;
 }
 @media (max-width: 979px) {
   body {
@@ -208,4 +210,17 @@ li.light > a.active, li.light > a:hover {
 	-moz-border-radius: none;
 	border-radius: none;
 
+}
+.inputs-list {
+list-style:none;
+margin:0;
+}
+.inputs-list input {
+vertical-align: bottom;
+position:relative;
+top:-.5em;
+}
+.label-radio {
+display: inline-block;
+margin-left: 0.4em;
 }
