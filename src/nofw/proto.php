@@ -19,4 +19,8 @@ class Nofw_Proto {
 		var_dump("Called: ".$name." against proto object of type: ".$this->thing." from: ".$file." (".$line.").");
 		return $this;
 	}
+
+	public function __toString() {
+		return "Proto object of type: ".$this->thing.PHP_EOL;
+	}
 }
