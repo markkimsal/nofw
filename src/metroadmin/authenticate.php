@@ -24,8 +24,13 @@ class Metroadmin_Authenticate {
 		$res->unauthorized = TRUE;
 		$res->set('statusCode', 401);
 
-		associate_iCanHandle('output', 'metroadmin/authenticate.php', 1);
-//		associate_iCanHandle('template.main', 'metroadmin/authenticate.php', 1);
+		//if user is not logged in, let them authenticate
+		if ($user->isAnonymous()) {
+			associate_iCanHandle('output', 'metroadmin/authenticate.php', 1);
+		} else {
+			$res->addTo('items', 'Your user do not have access to this page.');
+			$req->sparkMsg[] = 'Access denied';
+		}
 	}
 
 	/**
