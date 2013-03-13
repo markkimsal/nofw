@@ -29,6 +29,12 @@ class Metrofw_Router {
 			$request->appName = 'login';
 			associate_iCanHandle('authenticate', 'metrou/authenticator.php');
 			associate_iCanOwn('output', 'metrofw/redir.php');
+		}
+
+		if (@$request->vars[0] == 'dologout') {
+			$request->appUrl  = 'logout';
+			$request->appName = 'logout';
+			associate_iCanHandle('authenticate', 'metrou/logout.php');
 			return;
 		}
 
