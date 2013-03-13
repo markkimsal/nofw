@@ -781,10 +781,10 @@ class Metrodb_Dataitem {
 		$this->_relatedMany[] = array('table'=>$table, 'alias'=>$alias);
 	}
 
-	public function hasOne($table, $fk = '', $alias='', $lk = '') {
+	public function hasOne($table, $fk = '', $lk = '', $alias='') {
 		if ($alias == '') { $alias = 'T'.count($this->_relatedSingle);}
 		if ($fk == '') { $fk = $table.'_id';}
-		if ($lk == '') { $lk = $this->getTable().'_id'; }
+		if ($lk == '') { $lk = $table.'_id'; }
 		$this->_relatedSingle[] = array('fk'=>$fk, 'ftable'=>$table, 'falias'=>$alias, 'lk'=>$lk, 'ltable'=>$this->_table);
 	}
 
