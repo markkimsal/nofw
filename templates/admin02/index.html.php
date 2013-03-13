@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
     <title><?php echo associate_get('sitename', 'Nofw');?> Control Panel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
     <!-- Le styles -->
-    <link href="<?php echo m_turl();?>css/bootstrap.css" rel="stylesheet">
+    <link href="<?php echo m_turl();?>css/bootstrap.css" rel="stylesheet" />
     <style type="text/css">
 		.wrapper {
 		min-height: 100%;
@@ -31,8 +32,8 @@ padding-top:58px;
 }
 
     </style>
-    <link href="<?php echo m_turl();?>css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="<?php echo m_turl();?>css/admin02-screen.css" rel="stylesheet">
+    <link href="<?php echo m_turl();?>css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="<?php echo m_turl();?>css/admin02-screen.css" rel="stylesheet" />
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -40,11 +41,11 @@ padding-top:58px;
     <![endif]-->
 
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="<?php echo m_turl();?>ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo m_turl();?>ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo m_turl();?>ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo m_turl();?>ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="<?php echo m_turl();?>ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="<?php echo m_turl();?>ico/favicon.ico" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo m_turl();?>ico/apple-touch-icon-144-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo m_turl();?>ico/apple-touch-icon-114-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo m_turl();?>ico/apple-touch-icon-72-precomposed.png" />
+    <link rel="apple-touch-icon-precomposed" href="<?php echo m_turl();?>ico/apple-touch-icon-57-precomposed.png" />
   </head>
 
   <body>
@@ -58,17 +59,22 @@ padding-top:58px;
 			<span class="icon-bar"></span>
 		  </a>
           <a class="brand" href="#"><?php echo associate_get('sitename', 'Control Panel');?></a>
+	 <?php $user = $req->getUser(); ?>
+	 <?php if (!$user->isAnonymous()): ?>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> Username
+	    <i class="icon-user"></i><?php echo $user->getUsername(); ?>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
+              <li><a target="_blank" href="<?php echo m_url();?>">View Site</a></li>
+              <li class="divider"></li>
               <li><a href="#">Profile</a></li>
               <li class="divider"></li>
-              <li><a href="#">Sign Out</a></li>
+              <li><a href="<?php echo m_appurl('dologout');?>">Sign Out</a></li>
             </ul>
           </div>
+	  <?php endif; ?>
         </div>
       </div>
     </div>
@@ -78,6 +84,9 @@ padding-top:58px;
       <div class="row">
         <div class="span3 nav-collapse">
           <div class="sidebar">
+			<?php if (! Metrofw_Template::hasHandlers('template.adminmenu')):?>
+				&nbsp;
+			<?php endif; ?>
 			<?php echo Metrofw_Template::parseSection('template.adminmenu');?>
 <!--
             <ul class="sidebar-nav">
@@ -97,15 +106,13 @@ padding-top:58px;
 
 			<!-- Main hero unit for a primary marketing message or call to action -->
 			<?php if (Metrofw_Template::hasHandlers('template.sparkmsg')):?>
-				<div class="hero-unit">
+				<div class="alert alert-danger">
+					<button type="button" class="close" data-dismiss="alert">×</button>
 					<?php echo Metrofw_Template::parseSection('template.sparkmsg');?>
 				</div>
 			<?php endif;?>
 
-
-			<?php if (Metrofw_Template::hasHandlers('template.admin')):?>
-					<?php echo Metrofw_Template::parseSection('template.admin');?>
-			<?php endif;?>
+					<?php echo Metrofw_Template::parseSection('template.items');?>
 
       	</div><!--/.span9-->
 
