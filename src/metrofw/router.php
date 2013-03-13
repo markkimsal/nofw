@@ -28,7 +28,7 @@ class Metrofw_Router {
 			$request->appUrl  = 'login';
 			$request->appName = 'login';
 			associate_iCanHandle('authenticate', 'metrou/authenticator.php');
-			associate_iCanOwn('output', 'metrofw/redir.php');
+			return;
 		}
 
 		if (@$request->vars[0] == 'dologout') {
@@ -41,14 +41,13 @@ class Metrofw_Router {
 		if (strpos($url, '/hello') === 0) {
 			$request->appUrl  = 'hello';
 			$request->appName = 'hello';
-//			associate_iCanHandle('authenticate', 'metrou/authenticator.php');
 			associate_iCanOwn('output', 'test/helloworld.php');
 			return;
 		}
 
 
 		$parts = explode('/', $url);
-		if (!isset($parts[1])) {
+		if (!isset($parts[1]) || $parts[1] == '') {
 			$parts[1] = 'main';
 		}
 
