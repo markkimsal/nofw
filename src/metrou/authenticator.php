@@ -31,10 +31,10 @@ class Metrou_Authenticator {
 		$err = $this->handler->authenticate($this->subject);
 
 		if ($err) {
-			$request->sparkMsg[] = 'failed login';
+			$request->sparkMsg[] = 'Login Failed';
 			return FALSE;
 		}
-		$request->sparkMsg[] = 'login succeeded';
+		$request->sparkMsg[] = 'Login Succeeded';
 		if ($request->appUrl == 'login') {
 			$response->redir = m_appurl();
 		}
