@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Nofw PHP meta-framework by markkimsal</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Nofw PHP meta-framework</h1>
+          <h2>No framework framework - Event driven lifecycles make all logic reusable</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/markkimsal/nofw/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/markkimsal/nofw/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/markkimsal/nofw" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>nofw</h1>
+
+<p>With most frameworks, configuration is an afterthought.  This leads to hugely complex libraries which are required to be loaded every request to handle every possible situation.  What if you could write controllers that were actually part of the framework and could redirect the flow to new sections of the framework at runtime?</p>
+
+<h1>lifecycle</h1>
+
+<p>As it stands now, there are 6 portions to the request lifecycle:</p>
+
+<ul>
+<li>analyze();</li>
+<li>resources();</li>
+<li>authenticate();</li>
+<li>process();</li>
+<li>output();</li>
+<li>hangup();</li>
+</ul><p>Each part of the lifecycle functions as a signal/slot event mechanism.  You add your libraries to the lifecycle by telling the associate you can handle a part of a lifecycle.</p>
+
+<div class="highlight"><pre>  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'hangup'</span><span class="p">,</span> <span class="s1">'mytools/recordexecutiontime.php'</span><span class="p">);</span>
+</pre></div>
+
+<p>Inside the specified file should be a class named Mytools_Recordexecutiontime and a function called hangup();</p>
+
+<p>If, during the process of certain requests, you decide that you want to completely alter the execution path you can <em>own</em> part of a lifecycle with associate_iCanOwn( $cycle, $file).  This will erase all previously identified slots for that part of the lifecycle.</p>
+
+<h1>sounds dumb</h1>
+
+<p>Indeed, and perhaps it is dumb.  Maybe you are wondering where all the nifty libraries are that force you to do things a certain way.  Those already exist and are just waiting for you to hook them in!  You can chain in an entire Zend Framework application with one class that wraps up $application-&gt;bootstrap()-&gt;run().  What's the point of that, you say?  It gives you a starting point to dissect your existing application and inject resource-light responses when needed.</p>
+
+<h1>setup</h1>
+
+<p>Copy etc/bootstrap.php.txt to etc/bootstrap.php
+Add the following line to etc/bootstrap.php</p>
+
+<div class="highlight"><pre>  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/helloworld.php'</span><span class="p">);</span>
+</pre></div>
+
+<p>Create a folder in local called 'mypage'.
+Create a file called 'helloworld.php' in 'mypage'.</p>
+
+<p>Add this to the helloworld.php file</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="k">class</span> <span class="nc">Mypage_Helloworld</span> <span class="p">{</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">output</span><span class="p">(</span><span class="o">&amp;</span><span class="nv">$request</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">echo</span> <span class="s2">"Hello World."</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h1>advanced</h1>
+
+<p>What happens if you put this in the output function of hello world?</p>
+
+<div class="highlight"><pre>    <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/footer.php'</span><span class="p">);</span>
+</pre></div>
+
+<h1>things</h1>
+
+<p>Sometimes you need to use an object in more than one place (duh).  These are 'things' in nofw.  If you want to have a standard user class, in the etc/bootstrap.php file simply add:</p>
+
+<div class="highlight"><pre><span class="nx">associate_IAmA</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="s1">'myuser/user_model.php'</span><span class="p">);</span>
+</pre></div>
+
+<p>In other parts of your code, you can retreive this user with:</p>
+
+<div class="highlight"><pre><span class="nv">$user</span> <span class="o">=</span> <span class="nx">associate_getMeA</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
+</pre></div>
+
+<p>The same technique can be used for DB handles or wrapper objects.  Experiment loading up 'things' in the 'resources' lifecycle.</p>
+
+<p>You can pass constructor arguments to things as well:</p>
+
+<div class="highlight"><pre><span class="nx">associate_IAmA</span><span class="p">(</span><span class="s1">'db'</span><span class="p">,</span> <span class="s1">'mylibs/mysql.php'</span><span class="p">);</span>
+<span class="nv">$db1</span> <span class="o">=</span> <span class="nx">associate_getMeA</span><span class="p">(</span><span class="s1">'db'</span><span class="p">,</span> <span class="s1">'mysql://root@localhost/mydb'</span><span class="p">);</span>
+<span class="nv">$db2</span> <span class="o">=</span> <span class="nx">associate_getMeA</span><span class="p">(</span><span class="s1">'db'</span><span class="p">,</span> <span class="s1">'mysql://root@localhost/otherdb'</span><span class="p">);</span>
+</pre></div>
+
+<p>You can also request a clone of an object with:</p>
+
+<div class="highlight"><pre><span class="nx">associate_IAmA</span><span class="p">(</span><span class="s1">'user'</span><span class="p">,</span> <span class="s1">'myuser/user.php'</span><span class="p">);</span>
+<span class="nv">$loggedInUser</span> <span class="o">=</span> <span class="nx">associate_getMeA</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
+<span class="nv">$otherUser</span>    <span class="o">=</span> <span class="nx">associate_getMeANew</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
+</pre></div>
+
+<p>The $otherUser will be a clone (in PHP5) of the same object used for $loggedInUser.  Objects with different constructor arguments are always different, they are cached with the name of the file and an SHA1 sum of the constructor arguments.</p>
+
+<h1>undefined things</h1>
+
+<p>You can request a thing that has not been defined.  If you do this you will receive a new Nofw_Proto object reference.  This can be usefull for rapidly prototyping interconnections between libraries.  Starting with a bare object, you can inject a real class definition <em>later</em>.  Any function call against a Nofw_Proto will return itself and log the call against an undefined thing with any "logger" that you define.</p>
+
+<div class="highlight"><pre><span class="nv">$cart</span> <span class="o">=</span> <span class="nx">_getMeA</span><span class="p">(</span><span class="s2">"shopping_cart"</span><span class="p">);</span>
+<span class="nv">$cart</span><span class="o">-&gt;</span><span class="na">addItem</span><span class="p">(</span><span class="s2">"abc"</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span><span class="o">-&gt;</span>
+       <span class="na">retotal</span><span class="p">()</span><span class="o">-&gt;</span>
+       <span class="na">updateInventory</span><span class="p">()</span><span class="o">-&gt;</span>
+       <span class="na">save</span><span class="p">();</span>
+</pre></div>
+
+<p>Then, after a few iterations of development or complete launches, you can add a full class definition if you need to expand the capabilities of the thing.</p>
+
+<div class="highlight"><pre><span class="nx">associate_IamA</span><span class="p">(</span><span class="s1">'shopping_cart'</span><span class="p">,</span> <span class="s1">'myecommerce/cart.php'</span><span class="p">);</span>
+</pre></div>
+
+<h1>flags / settings</h1>
+
+<p>Setting and getting global values can be done with the associate_get()/associate_set() functions.  This can be handy when you set database connection information in the bootstrap, then load that information in your database abstraction library.  Other ideas can be copyright inforation, version strings, and template variables.</p>
+
+<h1>custom lifecycles</h1>
+
+<p>There's nothing stopping your from creating your own chain of command with the same lifecycles used in the master process running.</p>
+
+<div class="highlight"><pre>        <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
+        <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">'sparkMessages'</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">,</span> <span class="s1">'mytemplate/sparkmsg.php'</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="c1">//later...</span>
+
+        <span class="nv">$associate</span> <span class="o">=</span> <span class="nx">Nofw_Associate</span><span class="o">::</span><span class="na">getAssociate</span><span class="p">();</span>
+        <span class="nv">$request</span> <span class="o">=</span> <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">getMeA</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
+        <span class="nv">$output</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Top Menu'</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Spark Messages'</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Main Content'</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Main Content'</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Bottom Footer'</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nv">$output</span><span class="o">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+</pre></div>
+
+<h1>I build large sites, this isn't for me</h1>
+
+<p>Sure, so you should know how important it is to control resources on every page hit.  Do you know how your existing framework can handle large modifications to the workflow?  What if you had to add on API functionality, where the requests don't have cookies (and therefore sessions)?  When you're outputting JSON data do you need to load the entire templating library just to turn it off so you can send raw JSON?  What about a public RSS feed that is cached, can you avoid loading user and database libraries at all on those types of requests?  Does your framework offer customization at every level?</p>
+        </section>
+
+        <footer>
+          Nofw PHP meta-framework is maintained by <a href="https://github.com/markkimsal">markkimsal</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
