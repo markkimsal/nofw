@@ -16,6 +16,10 @@ class Nofw_Associate {
 		return self::$assoc;
 	}
 
+	/**
+	 * Get an object or callback reference for who can handle this service.
+	 * @return Mixed  Object or callback array suitable for dropping into call_user_func()
+	 */
 	public function whoCanHandle($service) {
 		$endService = 'post_'.$service;
 		//maybe we have only a post service (priority = 3)
@@ -47,11 +51,31 @@ class Nofw_Associate {
 			}
 		}
 
-		$file = $svc[1];
+		$filekey  = $svc[1];
+
+		if ($filekey === FALSE)
+			return FALSE;
+
+		//assume iCanHandle() was passed a file string
+		$file = $filekey;
+		//callback function defaults to name of service
+		$func = $service;
+
+		//check for function name embedded in filename
+		if (strpos($file, '::')!==FALSE) {
+			list($file, $func) = explode('::', $file);
+		}
+
 		unset($svc);
+
 		//you can tell the associate iCanHandle('service', $object)
 		// as well as passing it a file.
 		if (is_object($file)) {
+			return $file;
+		}
+
+		//you can also pass an callback array (obj, 'func')
+		if (is_array($file)) {
 			return $file;
 		}
 
@@ -71,7 +95,7 @@ class Nofw_Associate {
 			$this->objectCache[$file] = $_x;
 			$_x = null;
 		}
-		return $this->objectCache[$file];
+		return array($this->objectCache[$file], $func);
 	}
 
 	public function iCanHandle($service, $file, $priority=2) {
@@ -219,6 +243,15 @@ class Nofw_Associate {
 		}
 		return $className;
 	}
+
+	/**
+	 * Return true if there is any handler defined for a service
+	 */
+	public function hasHandlers($service) {
+		return (isset($this->serviceList[$service]) &&
+			is_array($this->serviceList[$service]) &&
+			count($this->serviceList[$service]) > 0);
+	}
 }
 
 function associate_iCanHandle($service, $file, $priority=2) {
@@ -267,6 +300,11 @@ function associate_get($key, $def=NULL) {
 	return $a->get($key, $def);
 }
 
+function associate_hasHandlers($service) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->hasHandlers($service);
+}
+
 
 function _iCanHandle($service, $file, $priority=2) {
 	$a = Nofw_Associate::getAssociate();
@@ -313,3 +351,9 @@ function _get($key, $def=NULL) {
 	$a = Nofw_Associate::getAssociate();
 	return $a->get($key, $def);
 }
+
+function _hasHandlers($service) {
+	$a = Nofw_Associate::getAssociate();
+	return $a->hasHandlers($service);
+}
+

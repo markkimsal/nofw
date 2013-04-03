@@ -23,8 +23,9 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc = $this->associate->whoCanHandle('analyze')) {
-			if (is_callable(array($svc, 'analyze')))
-			$svc->analyze($request, $response);
+			if (is_callable($svc))
+			//$svc[0]->analyze($request, $response);
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -36,8 +37,8 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('resources')) {
-			if (is_callable(array($svc, 'resources')))
-			$svc->resources($request, $response);
+			if (is_callable($svc))
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -46,8 +47,8 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('authenticate')) {
-			if (is_callable(array($svc, 'authenticate')))
-			$svc->authenticate($request, $response);
+			if (is_callable($svc))
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -56,8 +57,9 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('authorize')) {
-			if (is_callable(array($svc, 'authorize')))
-			$svc->authorize($request, $response);
+			if (is_callable($svc))
+			//$svc->authorize($request, $response);
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -66,8 +68,9 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('process')) {
-			if (is_callable(array($svc, 'process')))
-			$svc->process($request, $response);
+			if (is_callable($svc))
+			//$svc->process($request, $response);
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -76,8 +79,8 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('output')) {
-			if (is_callable(array($svc, 'output')))
-			$svc->output($request, $response);
+			if (is_callable($svc))
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
@@ -86,8 +89,9 @@ class Nofw_Master {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc =  $this->associate->whoCanHandle('hangup')) {
-			if (is_callable(array($svc, 'hangup')))
-			$svc->hangup($request, $response);
+			if (is_callable($svc))
+			//$svc->hangup($request, $response);
+			$svc[0]->{$svc[1]}($request, $response);
 		}
 		return $request;
 	}
