@@ -13,6 +13,6 @@ if(!include('etc/bootstrap.php')) {
 $assoc = Nofw_Associate::getAssociate();
 
 while ($svc = $assoc->whoCanHandle('master')) {
-	$svc->runMaster();
+	$svc[0]->runMaster();
 }
 
