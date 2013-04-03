@@ -96,14 +96,14 @@ class Metrou_User {
 	 * Load group association from the database
 	 */
 	public function loadGroups() {
-		$finder = associate_getMeANew('dataitem', 'cgn_user_group_link');
-		$finder->andWhere('cgn_user_id',$this->userId);
-		$finder->hasOne('cgn_group', 'cgn_group_id', 'Tgrp', 'cgn_group_id');
+		$finder = associate_getMeANew('dataitem', 'user_group_rel');
+		$finder->andWhere('user_login_id', $this->userId);
+		$finder->hasOne('user_group', 'user_group_id');
 		$groups = $finder->find();
 		$this->groups = array();
 		foreach ($groups as $_group) {
 			if ($_group->code != '')
-			$this->groups[ $_group->cgn_group_id ] = $_group->code;
+			$this->groups[ $_group->user_group_id ] = $_group->code;
 		}
 	}
 
@@ -204,25 +204,6 @@ class Metrou_User {
 		$this->account->load();
 
 		$this->_accountLoaded = TRUE;
-	}
-
-	/**
-	 * Add a message to the session, it will be displayed on the next template render.
-	 *
-	 * This is usefull for adding messages before a redirect.
-	 *
-	 * valid types include:
-	 *  msg_info
-	 *  msg_warn
-	 */
-	public function addSessionMessage($msg,$type = 'msg_info') {
-		$mySession = associate_getMeA('session');
-		$session->append('_sessionMessages', array('text'=>$msg, 'type'=>$type));
-	}
-
-	public function addMessage($msg,$type = 'msg_info') {
-		$mySession = associate_getMeA('session');
-		$session->append('_messages', array('text'=>$msg, 'type'=>$type));
 	}
 
 	/**

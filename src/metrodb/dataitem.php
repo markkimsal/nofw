@@ -36,7 +36,6 @@ class Metrodb_Dataitem {
 	public $_start         = -1;
 	public $_sort          = array();
 	public $_groupBy       = array();
-	public $_orderBy       = array();
 	public $_filterNames   = TRUE;
 	public $_tblPrefix     = '';
 	public $_isNew         = FALSE;
@@ -500,7 +499,7 @@ class Metrodb_Dataitem {
 		} else {
 			$cols = '*';
 		}
-		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ." " . $this->buildOrder()." " . $this->buildLimit();
+		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ." " . $this->buildLimit();
 	}
 
 	public function buildCountSelect($whereQ='') {
@@ -706,14 +705,6 @@ class Metrodb_Dataitem {
 		return '';
 	}
 
-	public function buildOrder() {
-		if (count($this->_orderBy) > 0) {
-			return " ORDER BY  ".implode(',',$this->_orderBy);
-		}
-		return '';
-	}
-
-
 	public function buildGroup() {
 		if (count($this->_groupBy) > 0) {
 			return " GROUP BY  ".implode(',',$this->_groupBy);
@@ -763,10 +754,6 @@ class Metrodb_Dataitem {
 		$this->_groupBy[] = $col;
 	}
 
-	public function orderBy($col) {
-		$this->_orderBy[] = $col;
-	}
-
 	public function initBlank() {
 		$db = Metrodb_Connector::getHandle(NULL, $this->_table);
 		$columns = $db->getTableColumns($this->_table);
@@ -781,10 +768,10 @@ class Metrodb_Dataitem {
 		$this->_relatedMany[] = array('table'=>$table, 'alias'=>$alias);
 	}
 
-	public function hasOne($table, $fk = '', $alias='', $lk = '') {
+	public function hasOne($table, $fk = '', $lk = '', $alias='') {
 		if ($alias == '') { $alias = 'T'.count($this->_relatedSingle);}
 		if ($fk == '') { $fk = $table.'_id';}
-		if ($lk == '') { $lk = $this->getTable().'_id'; }
+		if ($lk == '') { $lk = $table.'_id'; }
 		$this->_relatedSingle[] = array('fk'=>$fk, 'ftable'=>$table, 'falias'=>$alias, 'lk'=>$lk, 'ltable'=>$this->_table);
 	}
 

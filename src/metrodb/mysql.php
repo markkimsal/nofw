@@ -43,7 +43,7 @@ class Metrodb_Mysql extends Metrodb_Connector {
 	 * @return  void
 	 * @param  string $queryString SQL command to send
 	 */
-	function query($queryString, $log = true) {
+	public function query($queryString) {
 
 		$this->queryString = $queryString;
 		$start = microtime();
@@ -56,17 +56,12 @@ class Metrodb_Mysql extends Metrodb_Connector {
 			return false;
 		}
 
-		$resSet = mysql_query($queryString, $this->driverId);
+		$resSet = @mysql_query($queryString, $this->driverId);
 		$this->row = 0;
 
 		if (!$resSet ) {
 			$this->errorNumber = mysql_errno();
 			$this->errorMessage = mysql_error();
-			if ($log) {
-				trigger_error('database error: ('.$this->errorNumber.') '.$this->errorMessage.'
-					<br/> statement was: <br/>
-					'.$queryString);
-			}
 			return false;
 		}
 		if (is_resource($resSet) ) {
@@ -89,7 +84,7 @@ class Metrodb_Mysql extends Metrodb_Connector {
 	}
 
 
-	function exec($statementString, $log = true) {
+	function exec($statementString) {
 		if ($this->driverId == 0 ) {
 			$this->connect();
 		}
