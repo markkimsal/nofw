@@ -36,7 +36,6 @@ class Metrodb_Dataitem {
 	public $_start         = -1;
 	public $_sort          = array();
 	public $_groupBy       = array();
-	public $_orderBy       = array();
 	public $_filterNames   = TRUE;
 	public $_tblPrefix     = '';
 	public $_isNew         = FALSE;
@@ -500,7 +499,7 @@ class Metrodb_Dataitem {
 		} else {
 			$cols = '*';
 		}
-		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ." " . $this->buildOrder()." " . $this->buildLimit();
+		return "SELECT ".$cols." FROM ".$this->getTable()." ".$this->buildJoin(). " ".$this->buildWhere($whereQ). " ". $this->buildSort(). " ". $this->buildGroup() ." " . $this->buildLimit();
 	}
 
 	public function buildCountSelect($whereQ='') {
@@ -706,14 +705,6 @@ class Metrodb_Dataitem {
 		return '';
 	}
 
-	public function buildOrder() {
-		if (count($this->_orderBy) > 0) {
-			return " ORDER BY  ".implode(',',$this->_orderBy);
-		}
-		return '';
-	}
-
-
 	public function buildGroup() {
 		if (count($this->_groupBy) > 0) {
 			return " GROUP BY  ".implode(',',$this->_groupBy);
@@ -761,10 +752,6 @@ class Metrodb_Dataitem {
 
 	public function groupBy($col) {
 		$this->_groupBy[] = $col;
-	}
-
-	public function orderBy($col) {
-		$this->_orderBy[] = $col;
 	}
 
 	public function initBlank() {
