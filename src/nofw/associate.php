@@ -22,6 +22,7 @@ class Nofw_Associate {
 	 */
 	public function whoCanHandle($service) {
 		$endService = 'post_'.$service;
+		$calledService = $service;
 		//maybe we have only a post service (priority = 3)
 		if (!isset($this->serviceList[$service])) {
 			$service = $endService;
@@ -59,7 +60,7 @@ class Nofw_Associate {
 		//assume iCanHandle() was passed a file string
 		$file = $filekey;
 		//callback function defaults to name of service
-		$func = $service;
+		$func = $calledService;
 
 		//check for function name embedded in filename
 		if (strpos($file, '::')!==FALSE) {
