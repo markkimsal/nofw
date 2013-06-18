@@ -30,9 +30,6 @@ class Nofw_Master {
 		return $request;
 	}
 
-	/**
-	 * @return a user
-	 */
 	public function resources() {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
