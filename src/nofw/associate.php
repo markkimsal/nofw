@@ -2,10 +2,11 @@
 
 class Nofw_Associate {
 
-	public $serviceList = array(); 
-	public $thingList   = array(); 
-	public $varList     = array(); 
-	public $objectCache = array();
+	public $serviceList  = array();
+	public $thingList    = array();
+	public $thingArgList = array();
+	public $varList      = array();
+	public $objectCache  = array();
 
 	static $assoc = NULL;
 
@@ -22,6 +23,7 @@ class Nofw_Associate {
 	 */
 	public function whoCanHandle($service) {
 		$endService = 'post_'.$service;
+		$calledService = $service;
 		//maybe we have only a post service (priority = 3)
 		if (!isset($this->serviceList[$service])) {
 			$service = $endService;
@@ -59,7 +61,7 @@ class Nofw_Associate {
 		//assume iCanHandle() was passed a file string
 		$file = $filekey;
 		//callback function defaults to name of service
-		$func = $service;
+		$func = $calledService;
 
 		//check for function name embedded in filename
 		if (strpos($file, '::')!==FALSE) {
@@ -122,8 +124,21 @@ class Nofw_Associate {
 		}
 	}
 
+	/**
+	 * Define a file as a thing.
+	 * Any extra arguments are saved and used as constructor arguments
+	 */
 	public function iAmA($thing, $file) {
 		$this->thingList[$thing] = $file;
+
+		$args = func_get_args();
+		//remove 2 known params
+		array_shift($args);
+		array_shift($args);
+		if (count($args)) {
+			$this->thingArgList[$thing] = $args;
+		}
+
 	}
 
 	/**
@@ -140,6 +155,10 @@ class Nofw_Associate {
 
 		$args = func_get_args();
 		array_shift($args);
+
+		if (!count($args) && isset($this->thingArgList[$thing])) {
+			$args = $this->thingArgList[$thing];
+		}
 		if (!count($args)) {
 			$args = NULL;
 			$cachekey = $file.':'.$thing;
@@ -167,6 +186,10 @@ class Nofw_Associate {
 
 		$args = func_get_args();
 		array_shift($args);
+		if (!count($args) && isset($this->thingArgList[$thing])) {
+			$args = $this->thingArgList[$thing];
+		}
+
 		if (!count($args)) {
 			$args = NULL;
 			$cachekey = $file;
@@ -266,7 +289,12 @@ function associate_iCanOwn($service, $file) {
 
 function associate_iAmA($thing, $file) {
 	$a = Nofw_Associate::getAssociate();
-	$a->iAmA($thing, $file);
+	$args = func_get_args();
+	if (count($args) <= 2) {
+		return $a->iAmA($thing, $file);
+	} else {
+		return call_user_func_array(array($a, 'iAmA'), $args);
+	}
 }
 
 function associate_getMeA($thing) {
@@ -318,7 +346,12 @@ function _iCanOwn($service, $file) {
 
 function _iAmA($thing, $file) {
 	$a = Nofw_Associate::getAssociate();
-	$a->iAmA($thing, $file);
+	$args = func_get_args();
+	if (count($args) <= 2) {
+		return $a->iAmA($thing, $file);
+	} else {
+		return call_user_func_array(array($a, 'iAmA'), $args);
+	}
 }
 
 function _getMeA($thing) {

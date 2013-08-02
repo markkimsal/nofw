@@ -3,13 +3,27 @@
 
 class Nofw_Master {
 
+	/**
+	 * Cache reference
+	 */
 	public $associate = NULL;
 
-
+	/**
+	 * Cache reference
+	 */
 	public function __construct() {
 		$this->associate = Nofw_Associate::getAssociate();
 	}
 
+	/**
+	 * Run lifecycles:
+	 *  analyze
+	 *  resources
+	 *  authenticate
+	 *  process
+	 *  output
+	 *  hangup
+	 */
 	public function runMaster() {
 		$this->analyze();
 		$this->resources();
@@ -30,9 +44,6 @@ class Nofw_Master {
 		return $request;
 	}
 
-	/**
-	 * @return a user
-	 */
 	public function resources() {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
