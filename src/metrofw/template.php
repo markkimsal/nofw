@@ -106,7 +106,7 @@ class Metrofw_Template {
 				}
 				return $html;
 			} else {
-				return $this->transformContent($c);
+				return $this->transformContent($content);
 			}
 		}
 		//we don't have a section in the response
@@ -194,14 +194,14 @@ class Metrofw_Template {
 			associate_iCanHandle($section, 'metrofw/template.php');
 		}
 		while ($svc =  $associate->whoCanHandle($section)) {
-			$output .= $svc->template($request, $section);
+			$output .= $svc[0]->template($request, $section);
 		}
 
 		return $output."\n";
 	}
 
 	/**
-	 * As associate if a section has anyone listening
+	 * Ask associate if a section has anyone listening
 	 */
 	static public function hasHandlers($section) {
 		$associate = Nofw_Associate::getAssociate();
