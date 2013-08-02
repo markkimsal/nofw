@@ -8,7 +8,15 @@ class Nofw_Proto {
 		$this->thing = $thing;
 	}
 
+	/**
+	 * Intercept all function calls so there are no stopping errors.
+	 * in DEV mode (associate_set('env', 'dev')) a trace will be emitted.
+	 */
 	public function __call($name, $args) {
+		//only show proto messages in dev mode
+		if (associate_get('env') != 'dev') {
+			return;
+		}
 		$bt = debug_backtrace();
 		$line = $bt[0]['line'];
 		$file = $bt[0]['file'];
