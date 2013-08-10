@@ -3,6 +3,8 @@ nofw
 
 With most frameworks, configuration is an afterthought.  This leads to hugely complex libraries which are required to be loaded every request to handle every possible situation.  What if you could write controllers that were actually part of the framework and could redirect the flow to new sections of the framework at runtime?
 
+http://markkimsal.github.io/nofw/
+
 lifecycle
 ====
 As it stands now, there are 6 portions to the request lifecycle:
