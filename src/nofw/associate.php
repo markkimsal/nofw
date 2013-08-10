@@ -215,12 +215,12 @@ class Nofw_Associate {
 
 		$filesep = '/';
 
-		if(!file_exists('local'.$filesep.$file)) {
-			if(!@include_once('src'.$filesep.$file)) {
+		if(!file_exists('src'.$filesep.$file)) {
+			if(!@include_once('local'.$filesep.$file)) {
 				return FALSE;
 			}
 		} else {
-			if(!@include_once('local'.$filesep.$file)) {
+			if(!@include_once('src'.$filesep.$file)) {
 				return FALSE;
 			}
 		}
