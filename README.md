@@ -147,6 +147,10 @@ There's nothing stopping your from creating your own chain of command with the s
 		return $output."\n";
 ```
 
-I build large sites, this isn't for me
+I build large sites, micro-frameworks aren't for me
 =====
-Sure, so you should know how important it is to control resources on every page hit.  Do you know how your existing framework can handle large modifications to the workflow?  What if you had to add on API functionality, where the requests don't have cookies (and therefore sessions)?  When you're outputting JSON data do you need to load the entire templating library just to turn it off so you can send raw JSON?  What about a public RSS feed that is cached, can you avoid loading user and database libraries at all on those types of requests?  Does your framework offer customization at every level?
+Sure, so you should know how important it is to control resources on every page hit.  Micro-frameworks really shine on large projects where every resource must be optimized for every hit.  
+
+composer and bower support
+=====
+Both composer and bower are configured to store dependencies in the local/ directory.  Bower is simpler to configure for dependencies that don't have composer.json files in their code.  Composer is nicer for PHP projects that support composer because of the automatic auto-loading file that's generated for you.  Pick either or mix and match.
