@@ -1,3 +1,6 @@
 <?php
 
+//uncomment if using php composer
+//@include('local/autoload.php');
+
 associate_iCanHandle('master', 'nofw/master.php');
