@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Nofw PHP meta-framework by markkimsal</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Nofw PHP meta-framework</h1>
+        <p class="header">No framework framework - Event driven lifecycles make all logic reusable</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/markkimsal/nofw/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/markkimsal/nofw/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/markkimsal/nofw">View On GitHub</a></li>
+        </ul>
+
+        <p class="header"><a class="header name" href="getting_started.html">Tutorial</a></p>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/markkimsal">markkimsal</a></p>
+
+
+      </header>
+
+      <section>
+        <h1>
+<a name="nofw" class="anchor" href="#nofw"><span class="octicon octicon-link"></span></a>First Request</h1>
+<p>
+	Start with a git clone into a new directory that is available to your Web server.
+<div class="highlight"><pre>git clone https://github.com/markkimsal/nofw.git mynewproj</pre></div>
+   Copy the etc/bootstrap.php.txt to etc/bootstrap.php
+<div class="highlight"><pre>cd mynewproj
+cp etc/bootstrap.php.txt etc/bootstrap.php</pre></div>
+   Now let's add a simple hello world file so you can see how the configuration works.  Edit the etc/bootstrap.php file so it looks like this:
+<div class="highlight"><pre>
+&lt;?php
+associate_iCanHandle('master', 'nofw/master.php');
+associate_iCanHandle('output',  'example/helloworld.php');
+</pre></div>
+
+   Create a directory in src called "example" and create the helloworld.php file
+
+<div class="highlight"><pre>
+mkdir src/example
+</pre></div>
+
+<div class="highlight"><pre>
+&lt;?php
+
+class Example_Helloworld {
+
+	public function output(&amp;$request, &amp;$response) {
+		echo "Hello World. &lt;br/&gt;\n";
+	}
+}
+</pre></div>
+
+</p>
+
+
+<p>
+Not too impressive, is it?  Notice how the classname directly maps to the folder/file structure on the disk.  Nofw is very opinionated about this structure as it saves a ton of execution time searching the disk and doesn't require auto-loading functionality.  With PHP composer you can include other libraries that don't follow this rule, as composer will generate an auto-loading file for you to include for all your dependencies.
+</p>
+
+
+      </section>
+
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
