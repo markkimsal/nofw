@@ -264,6 +264,7 @@ class Nofw_Associate {
 			if ($className) $className .= '_';
 			$className .= ucfirst($_n);
 		}
+		$className = str_replace('-', '', $className);
 		return $className;
 	}
 
