@@ -25,7 +25,7 @@
           <li><a class="buttons github" href="https://github.com/markkimsal/nofw">View On GitHub</a></li>
         </ul>
 
-        <p class="header"><a class="header name" href="getting_started.html">Tutorial</a></p>
+        <p class="header"><a class="header name" href="getting_started.html">Hello, World</a></p>
 
         <p class="header">This project is maintained by <a class="header name" href="https://github.com/markkimsal">markkimsal</a></p>
 
@@ -68,8 +68,9 @@ class Example_Helloworld {
 </p>
 
 
+<h1>Class Name Mapping</h1>
 <p>
-Not too impressive, is it?  Notice how the classname directly maps to the folder/file structure on the disk.  Nofw is very opinionated about this structure as it saves a ton of execution time searching the disk and doesn't require auto-loading functionality.  With PHP composer you can include other libraries that don't follow this rule, as composer will generate an auto-loading file for you to include for all your dependencies.
+Notice how the classname directly maps to the folder/file structure on the disk.  <em>example/helloworld.php</em> directly translates to a file <em>Example_Helloworld</em>.  Nofw prefers the "has-a" over the "is-a" paradigm.  Consequently, you won't have modules or libraries that need nested folders.  Having one way of mapping saves a lot of processing overhead as well.  The trade-off is that sometimes your class names might appear ugly, but the upside is that you focus on <strong>how</strong> those clases connect to produce your application.
 </p>
 
 
