@@ -33,7 +33,28 @@
         <h1>
 <a name="nofw" class="anchor" href="#nofw"><span class="octicon octicon-link"></span></a>nofw</h1>
 
-<p>With most frameworks, configuration is an afterthought.  This leads to hugely complex libraries which are required to be loaded every request to handle every possible situation.  What if you could write controllers that were actually part of the framework and could redirect the flow to new sections of the framework at runtime?</p>
+<p>With most frameworks, configuration is an afterthought.  This leads to hugely complex libraries which try to accomodate every possible scenario for each and every request, even if these features are rarely used.  What if you could write controllers that were actually part of the framework and could redirect the flow to new sections of the framework at runtime?</p>
+
+<p>Configuration, events, and dependency injection are all that nofw tries to accomplish.</p>
+
+<p>Nofw is designed to work with composer and/or bower dependency managers.</p>
+
+<h1>will I like nofw?</h1>
+<p>
+	<ul>
+		<li>Do you want performance over anything else?</li>
+		<li>Do you want more Rapid in your RAD?</li>
+		<li>Do you like the "has-a" over the "is-a" paradigm?</li>
+		<li>Do you think you can write better sites by connecting best-of-breed libraries?</li>
+		<li>Do you ever think you're spending more time trying to get your solution to play nice in your current framework than it takes to code the solution?</li>
+	</ul>
+
+	If you've answered, yes, to any of these questions, then <a href="https://github.com/markkimsal/nofw">fork</a> nofw and buckle up for a ride.
+</p>
+
+
+<h1>the associate</h1>
+<p>The Nofw_Associate class acts as the micro kernel.  Anytime you want to interact with the framework, or change the flow of a request, you talk to the associate for help.</p>
 
 <h1>
 <a name="lifecycle" class="anchor" href="#lifecycle"><span class="octicon octicon-link"></span></a>lifecycle</h1>
@@ -70,7 +91,7 @@ Add the following line to etc/bootstrap.php</p>
 <div class="highlight"><pre>  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/helloworld.php'</span><span class="p">);</span>
 </pre></div>
 
-<p>Create a folder in local called 'mypage'.
+<p>Create a folder in src called 'mypage'.
 Create a file called 'helloworld.php' in 'mypage'.</p>
 
 <p>Add this to the helloworld.php file</p>
@@ -90,7 +111,7 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
 
 <p>What happens if you put this in the output function of hello world?</p>
 
-<div class="highlight"><pre>    <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/footer.php'</span><span class="p">);</span>
+<div class="highlight"><pre><span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/footer.php'</span><span class="p">);</span>
 </pre></div>
 
 <h1>
@@ -151,31 +172,32 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
 
 <p>There's nothing stopping your from creating your own chain of command with the same lifecycles used in the master process running.</p>
 
-<div class="highlight"><pre>        <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
-        <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">'sparkMessages'</span><span class="p">]))</span> <span class="p">{</span>
-            <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">,</span> <span class="s1">'mytemplate/sparkmsg.php'</span><span class="p">);</span>
-        <span class="p">}</span>
+<div class="highlight"><pre>
+  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
+  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">,</span> <span class="s1">'mytemplate/menu.php'</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">'sparkMessages'</span><span class="p">]))</span> <span class="p">{</span>
+    <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">,</span> <span class="s1">'mytemplate/sparkmsg.php'</span><span class="p">);</span>
+  <span class="p">}</span>
 
-        <span class="c1">//later...</span>
+  <span class="c1">//later...</span>
 
-        <span class="nv">$associate</span> <span class="o">=</span> <span class="nx">Nofw_Associate</span><span class="o">::</span><span class="na">getAssociate</span><span class="p">();</span>
-        <span class="nv">$request</span> <span class="o">=</span> <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">getMeA</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
-        <span class="nv">$output</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
-        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Top Menu'</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Spark Messages'</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Main Content'</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Main Content'</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Bottom Footer'</span><span class="p">);</span>
-        <span class="p">}</span>
+  <span class="nv">$associate</span> <span class="o">=</span> <span class="nx">Nofw_Associate</span><span class="o">::</span><span class="na">getAssociate</span><span class="p">();</span>
+  <span class="nv">$request</span> <span class="o">=</span> <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">getMeA</span><span class="p">(</span><span class="s1">'request'</span><span class="p">);</span>
+  <span class="nv">$output</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Top Menu'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc[0]</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Top Menu'</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Spark Messages'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc[0]</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Spark Messages'</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Main Content'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc[0]</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Main Content'</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nv">$svc</span> <span class="o">=</span>  <span class="nv">$associate</span><span class="o">-&gt;</span><span class="na">whoCanHandle</span><span class="p">(</span><span class="s1">'Bottom Footer'</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nv">$output</span> <span class="o">.=</span> <span class="nv">$svc[0]</span><span class="o">-&gt;</span><span class="na">template</span><span class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span class="s1">'Bottom Footer'</span><span class="p">);</span>
+  <span class="p">}</span>
 
-        <span class="k">return</span> <span class="nv">$output</span><span class="o">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nv">$output</span><span class="o">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 </pre></div>
 
 <h1>
