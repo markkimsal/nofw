@@ -53,6 +53,18 @@ class Nofw_Associate {
 			}
 		}
 
+		//you can tell the associate iCanHandle('service', $obj)
+		// as well as passing it a file.
+		if (is_object($svc[1])) {
+			return array($svc[1], $calledService);
+		}
+
+		//you can also pass an callback array iCanHandle('service', array($obj, 'func'))
+		if (is_array($svc[1])) {
+			return $svc[1];
+		}
+
+
 		$filekey  = $svc[1];
 
 		if ($filekey === FALSE)
@@ -70,32 +82,9 @@ class Nofw_Associate {
 
 		unset($svc);
 
-		//you can tell the associate iCanHandle('service', $object)
-		// as well as passing it a file.
-		if (is_object($file)) {
-			return $file;
-		}
-
-		//you can also pass an callback array (obj, 'func')
-		if (is_array($file)) {
-			return $file;
-		}
-
-		if (!isset($this->objectCache[$file])) {
-			if(!file_exists('local'.$filesep.$file)) {
-				if(!@include_once('src'.$filesep.$file))
-					//can't find a file, just keep going with recursion
-					return $this->whoCanHandle($service);
-			} else {
-				if(!include_once('local'.$filesep.$file)) {
-					//found the file, but it has an error, keep going with recursion
-					return $this->whoCanHandle($service);
-				}
-			}
-			$className = $this->formatClassName($file);
-			$_x = new $className;
-			$this->objectCache[$file] = $_x;
-			$_x = null;
+		if (!$this->loadAndCache($file, $file)) {
+			//can't find a file, just keep going with recursion
+			return $this->whoCanHandle($service);
 		}
 		return array($this->objectCache[$file], $func);
 	}
@@ -149,6 +138,10 @@ class Nofw_Associate {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
 		}
+		if (is_object($this->thingList[$thing])) {
+			return $this->thingList[$thing];
+		}
+
 		$filesep = '/';
 		$objList = array();
 		$file = $this->thingList[$thing];
@@ -180,6 +173,10 @@ class Nofw_Associate {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
 		}
+		if (is_object($this->thingList[$thing])) {
+			return clone $this->thingList[$thing];
+		}
+
 		$filesep = '/';
 		$objList = array();
 		$file = $this->thingList[$thing];
