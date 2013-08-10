@@ -1,41 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>Nofw PHP meta-framework by markkimsal</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Nofw PHP meta-framework by markkimsal</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Nofw PHP meta-framework</h1>
+        <p class="header">No framework framework - Event driven lifecycles make all logic reusable</p>
 
-        <header>
-          <h1>Nofw PHP meta-framework</h1>
-          <h2>No framework framework - Event driven lifecycles make all logic reusable</h2>
-        </header>
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/markkimsal/nofw/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/markkimsal/nofw/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/markkimsal/nofw">View On GitHub</a></li>
+        </ul>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/markkimsal/nofw/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/markkimsal/nofw/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/markkimsal/nofw" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/markkimsal">markkimsal</a></p>
 
-        <hr>
 
-        <section id="main_content">
-          <h1>nofw</h1>
+      </header>
+      <section>
+        <h1>
+<a name="nofw" class="anchor" href="#nofw"><span class="octicon octicon-link"></span></a>nofw</h1>
 
 <p>With most frameworks, configuration is an afterthought.  This leads to hugely complex libraries which are required to be loaded every request to handle every possible situation.  What if you could write controllers that were actually part of the framework and could redirect the flow to new sections of the framework at runtime?</p>
 
-<h1>lifecycle</h1>
+<h1>
+<a name="lifecycle" class="anchor" href="#lifecycle"><span class="octicon octicon-link"></span></a>lifecycle</h1>
 
 <p>As it stands now, there are 6 portions to the request lifecycle:</p>
 
@@ -55,11 +56,13 @@
 
 <p>If, during the process of certain requests, you decide that you want to completely alter the execution path you can <em>own</em> part of a lifecycle with associate_iCanOwn( $cycle, $file).  This will erase all previously identified slots for that part of the lifecycle.</p>
 
-<h1>sounds dumb</h1>
+<h1>
+<a name="sounds-dumb" class="anchor" href="#sounds-dumb"><span class="octicon octicon-link"></span></a>sounds dumb</h1>
 
 <p>Indeed, and perhaps it is dumb.  Maybe you are wondering where all the nifty libraries are that force you to do things a certain way.  Those already exist and are just waiting for you to hook them in!  You can chain in an entire Zend Framework application with one class that wraps up $application-&gt;bootstrap()-&gt;run().  What's the point of that, you say?  It gives you a starting point to dissect your existing application and inject resource-light responses when needed.</p>
 
-<h1>setup</h1>
+<h1>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>setup</h1>
 
 <p>Copy etc/bootstrap.php.txt to etc/bootstrap.php
 Add the following line to etc/bootstrap.php</p>
@@ -82,14 +85,16 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
 <span class="p">}</span>
 </pre></div>
 
-<h1>advanced</h1>
+<h1>
+<a name="advanced" class="anchor" href="#advanced"><span class="octicon octicon-link"></span></a>advanced</h1>
 
 <p>What happens if you put this in the output function of hello world?</p>
 
 <div class="highlight"><pre>    <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'output'</span><span class="p">,</span> <span class="s1">'mypage/footer.php'</span><span class="p">);</span>
 </pre></div>
 
-<h1>things</h1>
+<h1>
+<a name="things" class="anchor" href="#things"><span class="octicon octicon-link"></span></a>things</h1>
 
 <p>Sometimes you need to use an object in more than one place (duh).  These are 'things' in nofw.  If you want to have a standard user class, in the etc/bootstrap.php file simply add:</p>
 
@@ -119,7 +124,8 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
 
 <p>The $otherUser will be a clone (in PHP5) of the same object used for $loggedInUser.  Objects with different constructor arguments are always different, they are cached with the name of the file and an SHA1 sum of the constructor arguments.</p>
 
-<h1>undefined things</h1>
+<h1>
+<a name="undefined-things" class="anchor" href="#undefined-things"><span class="octicon octicon-link"></span></a>undefined things</h1>
 
 <p>You can request a thing that has not been defined.  If you do this you will receive a new Nofw_Proto object reference.  This can be usefull for rapidly prototyping interconnections between libraries.  Starting with a bare object, you can inject a real class definition <em>later</em>.  Any function call against a Nofw_Proto will return itself and log the call against an undefined thing with any "logger" that you define.</p>
 
@@ -135,11 +141,13 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
 <div class="highlight"><pre><span class="nx">associate_IamA</span><span class="p">(</span><span class="s1">'shopping_cart'</span><span class="p">,</span> <span class="s1">'myecommerce/cart.php'</span><span class="p">);</span>
 </pre></div>
 
-<h1>flags / settings</h1>
+<h1>
+<a name="flags--settings" class="anchor" href="#flags--settings"><span class="octicon octicon-link"></span></a>flags / settings</h1>
 
 <p>Setting and getting global values can be done with the associate_get()/associate_set() functions.  This can be handy when you set database connection information in the bootstrap, then load that information in your database abstraction library.  Other ideas can be copyright inforation, version strings, and template variables.</p>
 
-<h1>custom lifecycles</h1>
+<h1>
+<a name="custom-lifecycles" class="anchor" href="#custom-lifecycles"><span class="octicon octicon-link"></span></a>custom lifecycles</h1>
 
 <p>There's nothing stopping your from creating your own chain of command with the same lifecycles used in the master process running.</p>
 
@@ -170,18 +178,16 @@ Create a file called 'helloworld.php' in 'mypage'.</p>
         <span class="k">return</span> <span class="nv">$output</span><span class="o">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
 </pre></div>
 
-<h1>I build large sites, this isn't for me</h1>
+<h1>
+<a name="i-build-large-sites-this-isnt-for-me" class="anchor" href="#i-build-large-sites-this-isnt-for-me"><span class="octicon octicon-link"></span></a>I build large sites, this isn't for me</h1>
 
 <p>Sure, so you should know how important it is to control resources on every page hit.  Do you know how your existing framework can handle large modifications to the workflow?  What if you had to add on API functionality, where the requests don't have cookies (and therefore sessions)?  When you're outputting JSON data do you need to load the entire templating library just to turn it off so you can send raw JSON?  What about a public RSS feed that is cached, can you avoid loading user and database libraries at all on those types of requests?  Does your framework offer customization at every level?</p>
-        </section>
-
-        <footer>
-          Nofw PHP meta-framework is maintained by <a href="https://github.com/markkimsal">markkimsal</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
     </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
   </body>
 </html>
