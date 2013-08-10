@@ -62,12 +62,12 @@
 <p>As it stands now, there are 6 portions to the request lifecycle:</p>
 
 <ul>
-<li>analyze();</li>
-<li>resources();</li>
-<li>authenticate();</li>
-<li>process();</li>
-<li>output();</li>
-<li>hangup();</li>
+<li>analyze</li>
+<li>resources</li>
+<li>authenticate</li>
+<li>process</li>
+<li>output</li>
+<li>hangup</li>
 </ul><p>Each part of the lifecycle functions as a signal/slot event mechanism.  You add your libraries to the lifecycle by telling the associate you can handle a part of a lifecycle.</p>
 
 <div class="highlight"><pre>  <span class="nx">associate_iCanHandle</span><span class="p">(</span><span class="s1">'hangup'</span><span class="p">,</span> <span class="s1">'mytools/recordexecutiontime.php'</span><span class="p">);</span>
