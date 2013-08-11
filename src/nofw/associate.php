@@ -64,14 +64,12 @@ class Nofw_Associate {
 			return $svc[1];
 		}
 
+		//assume iCanHandle() was passed a file string
+		$file  = $svc[1];
 
-		$filekey  = $svc[1];
-
-		if ($filekey === FALSE)
+		if ($file === FALSE)
 			return FALSE;
 
-		//assume iCanHandle() was passed a file string
-		$file = $filekey;
 		//callback function defaults to name of service
 		$func = $calledService;
 
