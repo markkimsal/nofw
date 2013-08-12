@@ -1,0 +1,9 @@
+<?php
+
+class Nofw_Tests_Emptyhandler {
+
+	public function testphase($req, $res) {
+		return true;
+	}
+	
+}
