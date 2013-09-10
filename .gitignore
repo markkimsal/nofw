@@ -1,3 +1,4 @@
 *~
 etc/bootstrap.php
 local/*
+!local/.gitignore
