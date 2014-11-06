@@ -13,6 +13,11 @@ class Nofw_Master {
 	 */
 	public function __construct() {
 		$this->associate = Nofw_Associate::getAssociate();
+
+		ini_set('display_errors', 'on');
+		set_exception_handler( array(&$this, 'onException') );
+		set_error_handler( array(&$this, 'onError') );
+		register_shutdown_function( array(&$this, 'handleFatal') );
 	}
 
 	/**
@@ -111,5 +116,41 @@ class Nofw_Master {
 
 	public function hangup() {
 		return $this->_runLifeCycle('hangup');
+	}
+
+	public function onException($ex) {
+		if (!$this->associate->hasHandlers('exception')) {
+			echo($ex);
+		} else {
+			_set('last_exception', $ex);
+			$this->_runLifeCycle('exception');
+			_set('last_exception', null);
+		}
+		return TRUE;
+	}
+
+	public function handleFatal() {
+		$error = error_get_last();
+		switch ($error['type']) {
+			case E_ERROR:
+			case E_PARSE:
+			return $this->onError( $error["type"], $error["message"], $error["file"], $error["line"] );
+		}
+		return TRUE;
+	}
+
+	public function onError($errno, $errstr, $errfile, $errline, $errcontext=array()) {
+		if (!($errno & error_reporting())) {
+			return TRUE;
+		}
+
+		if (!$this->associate->hasHandlers('exception')) {
+			echo ($errfile. ' ['.$errline.'] '.$errstr .' <br/> '.PHP_EOL);
+		} else {
+			_set('last_exception', new Exception($errfile. ' ['.$errline.'] '.$errstr , $errno));
+			$this->_runLifeCycle('exception');
+			_set('last_exception', null);
+		}
+		return TRUE;
 	}
 }
