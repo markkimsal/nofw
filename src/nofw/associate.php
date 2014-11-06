@@ -10,6 +10,15 @@ class Nofw_Associate {
 
 	static $assoc = NULL;
 
+	public function __construct() {
+		//register shutdown functions execute in a different
+		// directory. we need to set include path. for exception lifecycle
+		//root/src/nofw/associate.php
+		set_include_path(
+			get_include_path().':'.dirname(dirname(dirname(__FILE__)))
+		);
+	}
+
 	static public function &getAssociate() {
 		if (self::$assoc == NULL) {
 			self::$assoc = new Nofw_Associate();
@@ -218,7 +227,7 @@ class Nofw_Associate {
 				return FALSE;
 			}
 		} else {
-			if(!@include_once('src'.$filesep.$file)) {
+			if(!include_once('src'.$filesep.$file)) {
 				return FALSE;
 			}
 		}
