@@ -276,9 +276,16 @@ class Nofw_Associate {
 	 * Return true if there is any handler defined for a service
 	 */
 	public function hasHandlers($service) {
-		return (isset($this->serviceList[$service]) &&
+		$post = 'post_'.$service;
+		return (
+			(isset($this->serviceList[$service]) &&
 			is_array($this->serviceList[$service]) &&
-			count($this->serviceList[$service]) > 0);
+			count($this->serviceList[$service]) > 0)
+			||
+			(isset($this->serviceList[$post]) &&
+			is_array($this->serviceList[$post]) &&
+			count($this->serviceList[$post]) > 0)
+			);
 	}
 }
 
