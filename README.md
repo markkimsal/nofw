@@ -50,11 +50,28 @@ Add this to the helloworld.php file
 
 class Mypage_Helloworld {
 
-	public function output(&$request) {
-		echo "Hello World.";
+	public function output() {
+		echo "Hello World.\n";
 	}
 }
 ```
+
+The master lifecycle runner has talked to the dependency container (the singleton 'associate') and asked who can handle the lifecycle 'output'.  The associate, when asked whoCanHandle('service'), will either return a cached object, or load the file specified in the second argument of \_iCanHandle(), and return it.
+
+The master lifecycle runner will use the dependency container to inject desired "things" into the lifecycle function.  Example:
+
+```php
+_iAmA('shopping_cart', 'ecommv1/cart.php');
+
+//... later in mypage/helloworkd
+
+	public function output($shopping_cart) {
+		echo "Hello World.\n";
+		echo get_class($shopping_cart); //should output something like Ecommv1_Cart
+	}
+
+```
+
 
 advanced
 =======
@@ -110,6 +127,50 @@ Then, after a few iterations of development or complete launches, you can add a 
 ```php
 associate_IamA('shopping_cart', 'myecommerce/cart.php');
 ```
+
+promises
+======
+A 'thing' can be lazy loaded (i.e. not loaded and instantiated until it is actually used) with a promise.
+
+```php
+$cart = _promiseMeA("shopping_cart", "ecomm/cart.php");
+
+echo $cart->$thing;  //will show "shopping_cart"
+
+$cart()->addItem("abc", 123);  //will __invoke() on the promise, which will load and return the cart.
+// OR
+$cart->addItem("abc", 123);  //will __call a method on the promise which will __invoke()  and load and the cart internally
+```
+
+services
+======
+Services are simply objects that are lazy loaded into a lifecycle object via promises.  This ensures that if you don't need the emailer services on every controller action - let's say - then the emailer service will not be loaded and instantiated.
+
+```php
+//in etc/bootstrap.php
+_iAmA('emailerService', 'swiftmailer/mailservice.php');
+
+//in mypage/helloworld.php
+class Mypage_Helloworld {
+
+	public $emailerService;
+
+	public function output($shopping_cart) {
+		echo get_class($this->emailerService); //  Nofw_Promise
+
+		$emailer = $this->emailerService;
+		echo get_class($emailer);     //  Nofw_Promise
+		echo get_class($emailer());   //  Swiftmailer_Mailservice
+
+
+		$this->emailerService->someFunction();
+		// called against the Nofw_Promise, which intercepts
+		// via __call, loads the internal object, and then invokes 'someFunction'
+		// on the example Swiftmailer_Mailservice instance
+	}
+}
+```
+
 
 flags / settings
 ======
