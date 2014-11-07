@@ -81,6 +81,27 @@ class Nofw_Master {
 	}
 
 	public function _runLifeCycle($cycle) {
+		while ($svc = $this->associate->whoCanHandle($cycle)) {
+			if (!is_callable($svc)) {
+				continue;
+			}
+			$method = new ReflectionMethod($svc[0], $svc[1]);
+			$params = $method->getParameters();
+			$args   = array();
+			foreach ($params as $k=>$v) {
+				if (!$v->getClass() || $v->getClass()->name == '') {  //untyped parameter
+					$args[] =& $this->associate->getMeA($v->name);
+				} elseif ($v->getClass()) {
+					$args[] =& $this->associate->getMeA($v->getClass()->name);
+				} else {
+					$args[] =& $this->associate->getMeA($v->getDefaultValue());
+				}
+			}
+			$method->invokeArgs($svc[0], $args);
+		}
+	}
+/*
+	public function _runLifeCycle($cycle) {
 		$request  = $this->associate->getMeA('request');
 		$response = $this->associate->getMeA('response');
 		while ($svc = $this->associate->whoCanHandle($cycle)) {
@@ -89,7 +110,7 @@ class Nofw_Master {
 		}
 		return $request;
 	}
-
+*/
 	public function analyze() {
 		return $this->_runLifeCycle('analyze');
 	}
