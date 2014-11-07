@@ -1,4 +1,5 @@
 <?php
+include_once(dirname(__FILE__).'/promise.php');
 
 class Nofw_Associate {
 
@@ -134,7 +135,17 @@ class Nofw_Associate {
 		if (count($args)) {
 			$this->thingArgList[$thing] = $args;
 		}
+	}
 
+	/**
+	 * Return a Nofw_Promise, which returns
+	 * the desired instance when __invoked()
+	 */
+	public function promiseMeA($thing) {
+		$args = func_get_args();
+		array_shift($args);
+
+		return new Nofw_Promise($thing, $args);
 	}
 
 	/**
@@ -235,6 +246,12 @@ class Nofw_Associate {
 		if (is_array($args) && class_exists('ReflectionClass', false)) {
 			$refl = new ReflectionClass($className);
 			try {
+				//invoke lazy loading promises
+				foreach ($args as $_argk => $_argv) {
+					if (is_object($_argv) && method_exists($_argv, '__invoke')) {
+						$args[ $_argk ] = $_argv();
+					}
+				}
 				$_x = $refl->newInstanceArgs($args);
 			} catch (ReflectionException $e) {
 				$_x = $refl->newInstance();
@@ -242,10 +259,24 @@ class Nofw_Associate {
 		} else {
 			$_x = new $className;
 		}
+		$this->attachServices($_x);
 
 		$this->objectCache[$cachekey] = $_x;
 		$_x = null;
 		return TRUE;
+	}
+
+	/**
+	 * Set a DI promise object on every
+	 * class var that ends with 'Service'
+	 */
+	public function attachServices($obj) {
+		$args = get_class_vars( get_class($obj) );
+		foreach ($args as $_k=>$_v) {
+			if (substr($_k, -7) == 'Service') {
+				$obj->$_k = _promiseMeA($_k);
+			}
+		}
 	}
 
 	public function set($key, $val) {
@@ -309,6 +340,17 @@ function associate_iAmA($thing, $file) {
 	}
 }
 
+function associate_promiseMeA($thing) {
+	$a = Nofw_Associate::getAssociate();
+	$args = func_get_args();
+	if (count($args) <= 1) {
+		return $a->promiseMeA($thing);
+	} else {
+		return call_user_func_array(array($a, 'promiseMeA'), $args);
+	}
+	return $a->promiseMeA($thing);
+}
+
 function associate_getMeA($thing) {
 	$a = Nofw_Associate::getAssociate();
 	$args = func_get_args();
@@ -364,6 +406,17 @@ function _iAmA($thing, $file) {
 	} else {
 		return call_user_func_array(array($a, 'iAmA'), $args);
 	}
+}
+
+function _promiseMeA($thing) {
+	$a = Nofw_Associate::getAssociate();
+	$args = func_get_args();
+	if (count($args) <= 1) {
+		return $a->promiseMeA($thing);
+	} else {
+		return call_user_func_array(array($a, 'promiseMeA'), $args);
+	}
+	return $a->promiseMeA($thing);
 }
 
 function _getMeA($thing) {
